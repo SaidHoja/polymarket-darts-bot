@@ -1,0 +1,14 @@
+.env*
+task.pdf
+__pycache__/
+.DS_Store
+venv/
+captures/
+data-analysis/*.parquet
+logs/
+target/
+run/
+data-analysis/backtest/
+backtests/
+data-analysis/strategy-research/markets.pkl
+data-analysis/vwap-depth-results.json

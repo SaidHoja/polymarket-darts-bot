@@ -1,0 +1,29 @@
+# Backtest profiles. Same format as the live config; `pm-backtest run --strategy a,b,…`
+# forces each named profile onto every market. config/backtest-strategies.toml has the
+# full research set.
+#
+#   cargo run --release -p pm-backtest -- run --config config/backtest.example.toml \
+#       --strategy off,pre_match,full_match,two_phase,two_phase_vwap --fill-model base,pessimistic
+
+# No-trade: must give exactly zero PnL and zero order requests.
+[strategies.off]
+kind = "off"
+
+# The three market makers at their defaults.
+[strategies.pre_match]
+kind = "pre_match"
+
+[strategies.full_match]
+kind = "full_match"
+
+[strategies.two_phase]
+kind = "two_phase"
+
+# The two-phase parameters with a top-three-level book VWAP centre.
+[strategies.two_phase_vwap]
+kind = "two_phase_vwap"
+
+[risk]
+max_position = 20.0
+max_order_size = 5.0
+max_dev_from_fair = 0.16

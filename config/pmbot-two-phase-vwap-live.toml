@@ -1,0 +1,39 @@
+# Live test of two-phase VWAP: fair is the size-weighted price of others' best three
+# price levels per side, after provisional trades and removal of our resting orders.
+# All widths, timing, inventory, risk and execution settings match pmbot-two-phase-live.toml.
+# Quotes are fair minus inventory skew, then ±10¢ pre-match / ±15¢ from 15 minutes
+# before the scheduled start. Size 1, inventory cap 4. Trading VWAP depth is fixed at 3.
+#
+#   cargo build --release -p pm-live
+#   ./target/release/pmbot --mode live --config config/pmbot-two-phase-vwap-live.toml --ui 127.0.0.1:8787
+
+[markets]
+types = ["darts_match_winner"]
+vwap_depth = 3                  # display depth; strategy independently uses top 3/side
+
+[strategies.default]
+kind = "two_phase_vwap"
+size = 1.0
+pre_half_spread = 0.10
+live_half_spread = 0.15
+widen_before_start_s = 900.0    # switch to 15¢ 15 minutes before the scheduled start
+max_spread = 0.40
+max_inventory = 4.0             # at |position| >= 4, quote only the reducing side
+skew_per_contract = 0.01
+
+[strategies.off]
+kind = "off"
+
+[risk]
+max_position = 8.0
+max_order_size = 2.0
+max_orders_total = 40
+max_market_loss = 6.0
+max_account_loss = 30.0
+daily_loss_limit = 15.0         # below max_account_loss, so the daily kill fires first
+market_loss_limit = 2.0
+max_dev_from_fair = 0.16    # ±15¢ quotes round outward to the tick, up to 15.5¢ from fair
+
+[execution]
+rate_limit_enabled = false    # local REST budget off; HTTP 429 backoff still applies
+core_spin_us = 1000000        # keeps the core thread from sleeping between passes (one CPU busy) to skip the OS wake-up

@@ -1,0 +1,1531 @@
+{
+  "purpose": "Diagnose own-order/book timing feedback; synchronized delivery is an intervention, not a production fix or a prediction of live traffic.",
+  "script": "data-analysis/diagnose_vwap.py",
+  "isolated_diagnostic_source_sha256": {
+    "crates/pm-backtest/src/sim.rs": "a66e007690fd14b3b314d3566469b9865be88a862a15ee4b383bd316ddfa14bd",
+    "crates/pm-core/src/strategy/spread.rs": "b4df5f995406773cac25654d2b731fc7b905cb1226e10cf744e0ca3ba9676fa3"
+  },
+  "interventions": {
+    "normal": "Original timing and depth sensitivity, with counters/traces only.",
+    "synced": "Own actions deliver their private execution and resulting public book in the same batch after 63 ms; external book/trade delays remain standard.",
+    "touch": "Keep original timing and VWAP fair; disable depth-driven re-decisions."
+  },
+  "selected_two_market_diagnostics": {
+    "normal": {
+      "mid": [
+        {
+          "counts": {
+            "input/book": 2141,
+            "input/execution": 7577,
+            "input/other": 17,
+            "input/rest": 56,
+            "input/trade": 5,
+            "kind/cancel": 162,
+            "kind/modify_price": 9469,
+            "kind/place": 165,
+            "no_history_10s": 3912,
+            "no_history_1s": 8802,
+            "priority/Cancel": 162,
+            "priority/Quote": 5662,
+            "priority/Reduce": 3972
+          },
+          "requests": 9796,
+          "slug": "aec-modus-arnspe-andbae-2026-08-19"
+        },
+        {
+          "counts": {
+            "input/book": 3535,
+            "input/execution": 14887,
+            "input/other": 30,
+            "input/rest": 38,
+            "kind/cancel": 125,
+            "kind/modify_price": 18228,
+            "kind/place": 137,
+            "no_history_10s": 8475,
+            "no_history_1s": 17214,
+            "priority/Cancel": 125,
+            "priority/Quote": 13843,
+            "priority/Reduce": 4522
+          },
+          "requests": 18490,
+          "slug": "aec-modus-tommor-aartur-2026-10-14"
+        }
+      ],
+      "vwap": [
+        {
+          "counts": {
+            "input/book": 115395,
+            "input/execution": 608526,
+            "input/other": 91,
+            "input/rest": 610,
+            "input/trade": 4,
+            "kind/cancel": 1709,
+            "kind/modify_price": 721233,
+            "kind/place": 1684,
+            "no_history_10s": 592258,
+            "no_history_1s": 702686,
+            "priority/Cancel": 1709,
+            "priority/Quote": 414374,
+            "priority/Reduce": 308543
+          },
+          "requests": 724626,
+          "slug": "aec-modus-arnspe-andbae-2026-08-19"
+        },
+        {
+          "counts": {
+            "input/book": 1682,
+            "input/execution": 4147,
+            "input/other": 17,
+            "input/rest": 400,
+            "input/trade": 1,
+            "kind/cancel": 1078,
+            "kind/modify_price": 4092,
+            "kind/place": 1077,
+            "no_history_10s": 1360,
+            "no_history_1s": 3917,
+            "priority/Cancel": 1078,
+            "priority/Quote": 4446,
+            "priority/Reduce": 723
+          },
+          "requests": 6247,
+          "slug": "aec-modus-tommor-aartur-2026-10-14"
+        }
+      ]
+    },
+    "synced": {
+      "mid": [
+        {
+          "counts": {
+            "input/book": 147,
+            "input/execution": 2,
+            "input/other": 25,
+            "input/trade": 4,
+            "kind/cancel": 29,
+            "kind/modify_price": 117,
+            "kind/place": 32,
+            "no_history_1s": 17,
+            "priority/Cancel": 29,
+            "priority/Quote": 113,
+            "priority/Reduce": 36
+          },
+          "requests": 178,
+          "slug": "aec-modus-arnspe-andbae-2026-08-19"
+        },
+        {
+          "counts": {
+            "input/book": 171,
+            "input/execution": 13,
+            "input/other": 28,
+            "kind/cancel": 38,
+            "kind/modify_price": 134,
+            "kind/place": 40,
+            "no_history_10s": 2,
+            "no_history_1s": 19,
+            "priority/Cancel": 38,
+            "priority/Quote": 90,
+            "priority/Reduce": 84
+          },
+          "requests": 212,
+          "slug": "aec-modus-tommor-aartur-2026-10-14"
+        }
+      ],
+      "vwap": [
+        {
+          "counts": {
+            "input/book": 1028,
+            "input/execution": 14,
+            "input/trade": 8,
+            "kind/cancel": 43,
+            "kind/modify_price": 951,
+            "kind/place": 56,
+            "priority/Cancel": 43,
+            "priority/Quote": 554,
+            "priority/Reduce": 453
+          },
+          "requests": 1050,
+          "slug": "aec-modus-arnspe-andbae-2026-08-19"
+        },
+        {
+          "counts": {
+            "input/book": 480,
+            "input/execution": 18,
+            "input/other": 3,
+            "input/trade": 2,
+            "kind/cancel": 95,
+            "kind/modify_price": 304,
+            "kind/place": 104,
+            "priority/Cancel": 95,
+            "priority/Quote": 207,
+            "priority/Reduce": 201
+          },
+          "requests": 503,
+          "slug": "aec-modus-tommor-aartur-2026-10-14"
+        }
+      ]
+    },
+    "touch": {
+      "mid": [
+        {
+          "counts": {
+            "input/book": 2141,
+            "input/execution": 7577,
+            "input/other": 17,
+            "input/rest": 56,
+            "input/trade": 5,
+            "kind/cancel": 162,
+            "kind/modify_price": 9469,
+            "kind/place": 165,
+            "no_history_10s": 3912,
+            "no_history_1s": 8802,
+            "priority/Cancel": 162,
+            "priority/Quote": 5662,
+            "priority/Reduce": 3972
+          },
+          "requests": 9796,
+          "slug": "aec-modus-arnspe-andbae-2026-08-19"
+        },
+        {
+          "counts": {
+            "input/book": 3535,
+            "input/execution": 14887,
+            "input/other": 30,
+            "input/rest": 38,
+            "kind/cancel": 125,
+            "kind/modify_price": 18228,
+            "kind/place": 137,
+            "no_history_10s": 8475,
+            "no_history_1s": 17214,
+            "priority/Cancel": 125,
+            "priority/Quote": 13843,
+            "priority/Reduce": 4522
+          },
+          "requests": 18490,
+          "slug": "aec-modus-tommor-aartur-2026-10-14"
+        }
+      ],
+      "vwap": [
+        {
+          "counts": {
+            "input/book": 75853,
+            "input/execution": 423412,
+            "input/other": 1853,
+            "input/rest": 523,
+            "input/trade": 4,
+            "kind/cancel": 1383,
+            "kind/modify_price": 498890,
+            "kind/place": 1372,
+            "no_history_10s": 406498,
+            "no_history_1s": 488491,
+            "priority/Cancel": 1383,
+            "priority/Quote": 289182,
+            "priority/Reduce": 211080
+          },
+          "requests": 501645,
+          "slug": "aec-modus-arnspe-andbae-2026-08-19"
+        },
+        {
+          "counts": {
+            "input/book": 731,
+            "input/execution": 1826,
+            "input/other": 117,
+            "input/rest": 169,
+            "input/trade": 2,
+            "kind/cancel": 454,
+            "kind/modify_price": 1931,
+            "kind/place": 460,
+            "no_history_10s": 281,
+            "no_history_1s": 1813,
+            "priority/Cancel": 454,
+            "priority/Quote": 2176,
+            "priority/Reduce": 215
+          },
+          "requests": 2845,
+          "slug": "aec-modus-tommor-aartur-2026-10-14"
+        }
+      ]
+    }
+  },
+  "original_full_pessimistic_groups": {
+    "mid": {
+      "contracts": 1229.2999999999984,
+      "fees": 0.0,
+      "fills": 1552,
+      "fills_by_how": {
+        "cross": 1094,
+        "through": 458
+      },
+      "inventory": 50.08019999999999,
+      "markets": 242,
+      "markets_with_pnl": 230,
+      "max_drawdown": 4.236600000000001,
+      "mean_uptime": 0.7444917497173239,
+      "mo_10s": 0.03439186552603933,
+      "mo_1s": 0.031961869519749,
+      "mo_60s": 0.05111735856174817,
+      "mo_settle": 0.04989257215515916,
+      "name": "all",
+      "order_requests": 1714324,
+      "pnl": 61.21170000000001,
+      "pnl_ci95": [
+        39.960799999999985,
+        81.6449
+      ],
+      "pnl_per_market": 0.2661378260869566,
+      "rate_limited_s": 0,
+      "read_requests": 379268,
+      "rejects": 2326,
+      "req_per_s_max": 51,
+      "spread": 11.131499999999999
+    },
+    "vwap": {
+      "contracts": 1501.929999999977,
+      "fees": 0.0,
+      "fills": 2411,
+      "fills_by_how": {
+        "cross": 1912,
+        "through": 499
+      },
+      "inventory": -40.18274999999998,
+      "markets": 242,
+      "markets_with_pnl": 230,
+      "max_drawdown": 4.650449999999999,
+      "mean_uptime": 0.6440561724407917,
+      "mo_10s": -0.018350602525095155,
+      "mo_1s": -0.021288257131455688,
+      "mo_60s": -0.013857289673258081,
+      "mo_settle": -0.03918617651587733,
+      "name": "all",
+      "order_requests": 16688983,
+      "pnl": -58.532,
+      "pnl_ci95": [
+        -83.20130000000002,
+        -35.302400000000006
+      ],
+      "pnl_per_market": -0.25448695652173914,
+      "rate_limited_s": 0,
+      "read_requests": 379268,
+      "rejects": 11606,
+      "req_per_s_max": 52,
+      "spread": -18.349249999999984
+    }
+  },
+  "synchronized_full_diagnostics": {
+    "mid": {
+      "markets": 242,
+      "requests": 119796,
+      "counts": {
+        "input/book": 109151,
+        "kind/modify_price": 91696,
+        "kind/place": 14271,
+        "priority/Quote": 61893,
+        "input/execution": 2473,
+        "input/other": 6494,
+        "input/trade": 1678,
+        "kind/cancel": 13270,
+        "no_history_10s": 1827,
+        "no_history_1s": 5228,
+        "priority/Cancel": 13270,
+        "priority/Reduce": 44074,
+        "kind/modify_expiry": 559,
+        "priority/Refresh": 559
+      }
+    },
+    "vwap": {
+      "markets": 242,
+      "requests": 471514,
+      "counts": {
+        "input/book": 465764,
+        "kind/cancel": 40737,
+        "kind/modify_price": 389144,
+        "kind/place": 41444,
+        "priority/Cancel": 40737,
+        "priority/Quote": 221261,
+        "input/execution": 2950,
+        "input/other": 1369,
+        "no_history_10s": 1076,
+        "no_history_1s": 1215,
+        "priority/Reduce": 209327,
+        "input/trade": 1431,
+        "kind/modify_expiry": 189,
+        "priority/Refresh": 189
+      }
+    }
+  },
+  "synchronized_full_variants": {
+    "mid": {
+      "config": {
+        "execution": {
+          "ack_timeout_s": 3.0,
+          "cancel_timeout_s": 2.0,
+          "core_spin_us": 1000000,
+          "gtd_refresh_before_s": 30.0,
+          "housekeeping_ms": 250,
+          "inplay_gtd_s": 120.0,
+          "pre_match_gtd_after_start_s": 300.0,
+          "rate_limit_enabled": false,
+          "reconcile_balance_s": 300.0,
+          "reconcile_positions_s": 60.0,
+          "redecide_all_s": 5.0,
+          "unknown_order_s": 5.0,
+          "unmatched_attach_s": 2.0
+        },
+        "leagues": {},
+        "markets": {
+          "book_depth": 20,
+          "types": [
+            "darts_match_winner"
+          ],
+          "vwap_depth": 3
+        },
+        "risk": {
+          "book_band": 0.1,
+          "book_stale_after_trade_s": 10.0,
+          "book_stale_live_s": 90.0,
+          "daily_loss_limit": 15.0,
+          "fill_pause_s": 300.0,
+          "game_stale_s": 5.0,
+          "market_loss_limit": 2.0,
+          "market_pause_s": 60.0,
+          "max_account_loss": 30.0,
+          "max_book_moved_per_market_per_min": 5,
+          "max_dev_from_fair": 0.16,
+          "max_fills_per_market_per_min": 10,
+          "max_market_loss": 6.0,
+          "max_order_size": 2.0,
+          "max_orders_total": 40,
+          "max_position": 8.0,
+          "max_rejects_per_min": 10,
+          "reject_pause_s": 30.0,
+          "slow_exchange_s": 60.0
+        },
+        "routes": [],
+        "strategies": {
+          "default": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "mid": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "off": {
+            "kind": "off"
+          },
+          "vwap": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          }
+        }
+      },
+      "data_sha256": "04820fd4723b76ccde2a76a34fd4633dd193fe34d0e9f585b7de97a3d26abfca",
+      "excluded": [],
+      "git_revision": "8f2851548e15bf0c4f8086bc10b1b820771291f4",
+      "groups": [
+        {
+          "contracts": 1250.269999999999,
+          "fees": 0.0,
+          "fills": 1575,
+          "fills_by_how": {
+            "cross": 1104,
+            "through": 471
+          },
+          "inventory": 49.301750000000006,
+          "markets": 242,
+          "markets_with_pnl": 230,
+          "max_drawdown": 4.4742,
+          "mean_uptime": 0.7433092498629389,
+          "mo_10s": 0.03350914308302708,
+          "mo_1s": 0.03200607855361595,
+          "mo_60s": 0.04810905905127947,
+          "mo_settle": 0.0488065777663804,
+          "name": "all",
+          "order_requests": 119796,
+          "pnl": 60.90280000000004,
+          "pnl_ci95": [
+            38.94960000000001,
+            82.11950000000006
+          ],
+          "pnl_per_market": 0.2647947826086958,
+          "rate_limited_s": 0,
+          "read_requests": 379268,
+          "rejects": 820,
+          "req_per_s_max": 21,
+          "spread": 11.60105
+        },
+        {
+          "contracts": 441.90000000000026,
+          "fees": 0.0,
+          "fills": 546,
+          "fills_by_how": {
+            "cross": 383,
+            "through": 163
+          },
+          "inventory": 17.305200000000003,
+          "markets": 71,
+          "markets_with_pnl": 71,
+          "max_drawdown": 4.4742,
+          "mean_uptime": 0.688651530514159,
+          "mo_10s": 0.02509102530194836,
+          "mo_1s": 0.015657170217859735,
+          "mo_60s": 0.03471581532021098,
+          "mo_settle": 0.033015840687938426,
+          "name": "dev 08-14..08-19",
+          "order_requests": 21414,
+          "pnl": 14.5897,
+          "pnl_ci95": [
+            1.376800000000003,
+            28.035200000000007
+          ],
+          "pnl_per_market": 0.2054887323943662,
+          "rate_limited_s": 0,
+          "read_requests": 130998,
+          "rejects": 205,
+          "req_per_s_max": 10,
+          "spread": -2.7155
+        },
+        {
+          "contracts": 808.3699999999991,
+          "fees": 0.0,
+          "fills": 1029,
+          "fills_by_how": {
+            "cross": 721,
+            "through": 308
+          },
+          "inventory": 31.996550000000017,
+          "markets": 171,
+          "markets_with_pnl": 159,
+          "max_drawdown": 2.6799999999999997,
+          "mean_uptime": 0.766003390645181,
+          "mo_10s": 0.0376955959401101,
+          "mo_1s": 0.03989624494511846,
+          "mo_60s": 0.05535393894525982,
+          "mo_settle": 0.05746469960542979,
+          "name": "holdout 10-01..10-15",
+          "order_requests": 98382,
+          "pnl": 46.31310000000004,
+          "pnl_ci95": [
+            30.9643,
+            63.725899999999996
+          ],
+          "pnl_per_market": 0.2912773584905663,
+          "rate_limited_s": 0,
+          "read_requests": 248270,
+          "rejects": 615,
+          "req_per_s_max": 21,
+          "spread": 14.316550000000007
+        },
+        {
+          "contracts": 922.9799999999996,
+          "fees": 0.0,
+          "fills": 1174,
+          "fills_by_how": {
+            "cross": 816,
+            "through": 358
+          },
+          "inventory": 34.355149999999995,
+          "markets": 187,
+          "markets_with_pnl": 175,
+          "max_drawdown": 4.4742,
+          "mean_uptime": 0.7107835595429391,
+          "mo_10s": 0.019383136892381178,
+          "mo_1s": 0.0152957262124257,
+          "mo_60s": 0.038062504723754775,
+          "mo_settle": 0.04036130574113305,
+          "name": "league=modus",
+          "order_requests": 89323,
+          "pnl": 37.15460000000002,
+          "pnl_ci95": [
+            19.091300000000004,
+            54.82479999999997
+          ],
+          "pnl_per_market": 0.21231200000000014,
+          "rate_limited_s": 0,
+          "read_requests": 333972,
+          "rejects": 687,
+          "req_per_s_max": 21,
+          "spread": 2.7994500000000007
+        },
+        {
+          "contracts": 327.28999999999974,
+          "fees": 0.0,
+          "fills": 401,
+          "fills_by_how": {
+            "cross": 288,
+            "through": 113
+          },
+          "inventory": 14.9466,
+          "markets": 55,
+          "markets_with_pnl": 55,
+          "max_drawdown": 1.3025000000000002,
+          "mean_uptime": 0.853896596950939,
+          "mo_10s": 0.07829079919409013,
+          "mo_1s": 0.08277235823525714,
+          "mo_60s": 0.07790473521994963,
+          "mo_settle": 0.0725601148828258,
+          "name": "league=pdcdarts",
+          "order_requests": 30473,
+          "pnl": 23.748199999999994,
+          "pnl_ci95": [
+            13.785900000000003,
+            34.6453
+          ],
+          "pnl_per_market": 0.4317854545454544,
+          "rate_limited_s": 0,
+          "read_requests": 45296,
+          "rejects": 133,
+          "req_per_s_max": 15,
+          "spread": 8.8016
+        }
+      ],
+      "min_agreement": 0.99,
+      "seed": 1,
+      "sim": {
+        "balance": 1000.0,
+        "book_depth": 20,
+        "book_lag_ms": 63.0,
+        "fill_model": "pessimistic",
+        "game_state": true,
+        "lag_mult": 1.0,
+        "md_lag_sigma": 0.5,
+        "order_lag_sigma": 0.3,
+        "order_oneway_ms": 20.0,
+        "rate_per_s": 15.0,
+        "seed": 1,
+        "tie_window_ns": 1000000,
+        "trade_lag_ms": 54.0
+      },
+      "split": "all",
+      "strategy": "mid",
+      "variant": "mid__pessimistic__lag1"
+    },
+    "vwap": {
+      "config": {
+        "execution": {
+          "ack_timeout_s": 3.0,
+          "cancel_timeout_s": 2.0,
+          "core_spin_us": 1000000,
+          "gtd_refresh_before_s": 30.0,
+          "housekeeping_ms": 250,
+          "inplay_gtd_s": 120.0,
+          "pre_match_gtd_after_start_s": 300.0,
+          "rate_limit_enabled": false,
+          "reconcile_balance_s": 300.0,
+          "reconcile_positions_s": 60.0,
+          "redecide_all_s": 5.0,
+          "unknown_order_s": 5.0,
+          "unmatched_attach_s": 2.0
+        },
+        "leagues": {},
+        "markets": {
+          "book_depth": 20,
+          "types": [
+            "darts_match_winner"
+          ],
+          "vwap_depth": 3
+        },
+        "risk": {
+          "book_band": 0.1,
+          "book_stale_after_trade_s": 10.0,
+          "book_stale_live_s": 90.0,
+          "daily_loss_limit": 15.0,
+          "fill_pause_s": 300.0,
+          "game_stale_s": 5.0,
+          "market_loss_limit": 2.0,
+          "market_pause_s": 60.0,
+          "max_account_loss": 30.0,
+          "max_book_moved_per_market_per_min": 5,
+          "max_dev_from_fair": 0.16,
+          "max_fills_per_market_per_min": 10,
+          "max_market_loss": 6.0,
+          "max_order_size": 2.0,
+          "max_orders_total": 40,
+          "max_position": 8.0,
+          "max_rejects_per_min": 10,
+          "reject_pause_s": 30.0,
+          "slow_exchange_s": 60.0
+        },
+        "routes": [],
+        "strategies": {
+          "default": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "mid": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "off": {
+            "kind": "off"
+          },
+          "vwap": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          }
+        }
+      },
+      "data_sha256": "04820fd4723b76ccde2a76a34fd4633dd193fe34d0e9f585b7de97a3d26abfca",
+      "excluded": [],
+      "git_revision": "8f2851548e15bf0c4f8086bc10b1b820771291f4",
+      "groups": [
+        {
+          "contracts": 1441.869999999978,
+          "fees": 0.0,
+          "fills": 2328,
+          "fills_by_how": {
+            "cross": 1847,
+            "through": 481
+          },
+          "inventory": -28.588249999999988,
+          "markets": 242,
+          "markets_with_pnl": 230,
+          "max_drawdown": 5.2163,
+          "mean_uptime": 0.6450894709562106,
+          "mo_10s": -0.01944001894860184,
+          "mo_1s": -0.021570529396182998,
+          "mo_60s": -0.014970633598617961,
+          "mo_settle": -0.031809270782353856,
+          "name": "all",
+          "order_requests": 471514,
+          "pnl": -45.49679999999997,
+          "pnl_ci95": [
+            -73.21979999999995,
+            -19.735599999999987
+          ],
+          "pnl_per_market": -0.19781217391304334,
+          "rate_limited_s": 0,
+          "read_requests": 379268,
+          "rejects": 1981,
+          "req_per_s_max": 25,
+          "spread": -16.908549999999977
+        },
+        {
+          "contracts": 443.28000000000014,
+          "fees": 0.0,
+          "fills": 539,
+          "fills_by_how": {
+            "cross": 417,
+            "through": 122
+          },
+          "inventory": -6.670750000000001,
+          "markets": 71,
+          "markets_with_pnl": 71,
+          "max_drawdown": 5.2163,
+          "mean_uptime": 0.5368092519337174,
+          "mo_10s": -0.02621398461605325,
+          "mo_1s": -0.03959148839326354,
+          "mo_60s": -0.0173027301481605,
+          "mo_settle": -0.03889776213679843,
+          "name": "dev 08-14..08-19",
+          "order_requests": 121019,
+          "pnl": -17.242600000000003,
+          "pnl_ci95": [
+            -34.61150000000001,
+            -0.8273000000000013
+          ],
+          "pnl_per_market": -0.24285352112676062,
+          "rate_limited_s": 0,
+          "read_requests": 130998,
+          "rejects": 269,
+          "req_per_s_max": 20,
+          "spread": -10.571850000000001
+        },
+        {
+          "contracts": 998.590000000006,
+          "fees": 0.0,
+          "fills": 1789,
+          "fills_by_how": {
+            "cross": 1430,
+            "through": 359
+          },
+          "inventory": -21.917500000000008,
+          "markets": 171,
+          "markets_with_pnl": 159,
+          "max_drawdown": 3.6599999999999993,
+          "mean_uptime": 0.6900479244684731,
+          "mo_10s": -0.016715204698807738,
+          "mo_1s": -0.014662007712575609,
+          "mo_60s": -0.013987845730220752,
+          "mo_settle": -0.02862576239589869,
+          "name": "holdout 10-01..10-15",
+          "order_requests": 350495,
+          "pnl": -28.254200000000008,
+          "pnl_ci95": [
+            -49.15970000000003,
+            -8.393199999999997
+          ],
+          "pnl_per_market": -0.17769937106918243,
+          "rate_limited_s": 0,
+          "read_requests": 248270,
+          "rejects": 1712,
+          "req_per_s_max": 25,
+          "spread": -6.3366999999999924
+        },
+        {
+          "contracts": 1093.7200000000014,
+          "fees": 0.0,
+          "fills": 1623,
+          "fills_by_how": {
+            "cross": 1295,
+            "through": 328
+          },
+          "inventory": -30.670999999999996,
+          "markets": 187,
+          "markets_with_pnl": 175,
+          "max_drawdown": 5.2163,
+          "mean_uptime": 0.6068230686371204,
+          "mo_10s": -0.035632172552893686,
+          "mo_1s": -0.04025485986481266,
+          "mo_60s": -0.029312815354681207,
+          "mo_settle": -0.04691854179180327,
+          "name": "league=modus",
+          "order_requests": 347651,
+          "pnl": -50.772899999999986,
+          "pnl_ci95": [
+            -74.29569999999995,
+            -26.93590000000001
+          ],
+          "pnl_per_market": -0.2901308571428571,
+          "rate_limited_s": 0,
+          "read_requests": 333972,
+          "rejects": 1464,
+          "req_per_s_max": 25,
+          "spread": -20.101899999999993
+        },
+        {
+          "contracts": 348.15000000000106,
+          "fees": 0.0,
+          "fills": 705,
+          "fills_by_how": {
+            "cross": 552,
+            "through": 153
+          },
+          "inventory": 2.08275,
+          "markets": 55,
+          "markets_with_pnl": 55,
+          "max_drawdown": 1.5482,
+          "mean_uptime": 0.7751952388411157,
+          "mo_10s": 0.031038907709680794,
+          "mo_1s": 0.035097415810357184,
+          "mo_60s": 0.027668513162410004,
+          "mo_settle": 0.015154674709177002,
+          "name": "league=pdcdarts",
+          "order_requests": 123863,
+          "pnl": 5.276099999999999,
+          "pnl_ci95": [
+            -5.123800000000004,
+            15.180899999999998
+          ],
+          "pnl_per_market": 0.09592909090909088,
+          "rate_limited_s": 0,
+          "read_requests": 45296,
+          "rejects": 517,
+          "req_per_s_max": 24,
+          "spread": 3.1933500000000015
+        }
+      ],
+      "min_agreement": 0.99,
+      "seed": 1,
+      "sim": {
+        "balance": 1000.0,
+        "book_depth": 20,
+        "book_lag_ms": 63.0,
+        "fill_model": "pessimistic",
+        "game_state": true,
+        "lag_mult": 1.0,
+        "md_lag_sigma": 0.5,
+        "order_lag_sigma": 0.3,
+        "order_oneway_ms": 20.0,
+        "rate_per_s": 15.0,
+        "seed": 1,
+        "tie_window_ns": 1000000,
+        "trade_lag_ms": 54.0
+      },
+      "split": "all",
+      "strategy": "vwap",
+      "variant": "vwap__pessimistic__lag1"
+    }
+  },
+  "example_feedback_trace": [
+    {
+      "commands": [
+        "Place { token: Token(3), order: NewOrder { slug: \"aec-modus-arnspe-andbae-2026-08-19\", intent: BuyLong, px: 0.1800, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true }, priority: Quote }",
+        "Modify { token: Token(2), order_id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.3900, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }"
+      ],
+      "fair": 0.282887323943662,
+      "historical": "([(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000)], [(0.3300, 60.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000)])",
+      "inputs": "[Execution(ExecutionFrame { exec_id: \"X6\", order: VenueOrder { id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", side: Sell, intent: BuyShort, px: 0.6300, qty: 1.0000, cum_qty: 0.0000, leaves_qty: 1.0000, state: New }, kind: Replace, fill: None, reject: None, unsolicited: None, transact_ns: Some(1787015634049500471) })]",
+      "ns": 1787015634068349622,
+      "orders": [
+        "Sell PendingReplace px=0.6300 qty=1.0000 modify=Some((0.3900, 1.0000, Gtd(1787134500000000000)))",
+        "Buy PendingNew px=0.1800 qty=1.0000 modify=None"
+      ],
+      "since_history_ms": 85.834622,
+      "venue": [
+        [
+          {
+            "ours": -0.0,
+            "px": 0.32,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.2,
+            "qty": 20.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.15,
+            "qty": 50.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.1,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.02,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.01,
+            "qty": 5375.0
+          }
+        ],
+        [
+          {
+            "ours": -0.0,
+            "px": 0.33,
+            "qty": 60.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.55,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.8,
+            "qty": 10.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.9,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.98,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.99,
+            "qty": 5375.0
+          }
+        ]
+      ]
+    },
+    {
+      "commands": [
+        "Modify { token: Token(2), order_id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.2700, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }"
+      ],
+      "fair": 0.16568877551020408,
+      "historical": "([(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000)], [(0.3300, 60.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000)])",
+      "inputs": "[Book(BookFrame { slug: \"aec-modus-arnspe-andbae-2026-08-19\", bids: [(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000), (0.0100, 5375.0000)], offers: [(0.3300, 60.0000), (0.5500, 1.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000), (0.9900, 5375.0000)], state: Open, transact_ns: Some(1787015634033924239), shares_traded: Some(0.0000), settlement: None })]",
+      "ns": 1787015634104682406,
+      "orders": [
+        "Sell PendingReplace px=0.3900 qty=1.0000 modify=Some((0.2700, 1.0000, Gtd(1787134500000000000)))",
+        "Buy PendingNew px=0.1800 qty=1.0000 modify=None"
+      ],
+      "since_history_ms": 122.167406,
+      "venue": [
+        [
+          {
+            "ours": -0.0,
+            "px": 0.2,
+            "qty": 20.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.15,
+            "qty": 50.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.1,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.02,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.01,
+            "qty": 5375.0
+          }
+        ],
+        [
+          {
+            "ours": -0.0,
+            "px": 0.33,
+            "qty": 60.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.55,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.8,
+            "qty": 10.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.9,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.98,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.99,
+            "qty": 5375.0
+          }
+        ]
+      ]
+    },
+    {
+      "commands": [
+        "Modify { token: Token(3), order_id: \"SIM3\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.0600, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }"
+      ],
+      "fair": 0.16589285714285715,
+      "historical": "([(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000)], [(0.3300, 60.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000)])",
+      "inputs": "[Execution(ExecutionFrame { exec_id: \"X8\", order: VenueOrder { id: \"SIM3\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", side: Buy, intent: BuyLong, px: 0.1800, qty: 1.0000, cum_qty: 0.0000, leaves_qty: 1.0000, state: New }, kind: New, fill: None, reject: None, unsolicited: None, transact_ns: Some(1787015634107117257) })]",
+      "ns": 1787015634135342528,
+      "orders": [
+        "Sell PendingReplace px=0.3900 qty=1.0000 modify=Some((0.2700, 1.0000, Gtd(1787134500000000000)))",
+        "Buy PendingReplace px=0.1800 qty=1.0000 modify=Some((0.0600, 1.0000, Gtd(1787134500000000000)))"
+      ],
+      "since_history_ms": 152.827528,
+      "venue": [
+        [
+          {
+            "ours": -0.0,
+            "px": 0.2,
+            "qty": 20.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.15,
+            "qty": 50.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.1,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.02,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.01,
+            "qty": 5375.0
+          }
+        ],
+        [
+          {
+            "ours": -0.0,
+            "px": 0.33,
+            "qty": 60.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.63,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.8,
+            "qty": 10.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.9,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.98,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.99,
+            "qty": 5375.0
+          }
+        ]
+      ]
+    },
+    {
+      "commands": [
+        "Modify { token: Token(3), order_id: \"SIM3\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.1800, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }",
+        "Modify { token: Token(2), order_id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.3900, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }"
+      ],
+      "fair": 0.280774647887324,
+      "historical": "([(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000)], [(0.3300, 60.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000)])",
+      "inputs": "[Execution(ExecutionFrame { exec_id: \"X10\", order: VenueOrder { id: \"SIM3\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", side: Buy, intent: BuyLong, px: 0.0600, qty: 1.0000, cum_qty: 0.0000, leaves_qty: 1.0000, state: New }, kind: Replace, fill: None, reject: None, unsolicited: None, transact_ns: Some(1787015634149007159) })]",
+      "ns": 1787015634178553730,
+      "orders": [
+        "Sell PendingReplace px=0.2700 qty=1.0000 modify=Some((0.3900, 1.0000, Gtd(1787134500000000000)))",
+        "Buy PendingReplace px=0.0600 qty=1.0000 modify=Some((0.1800, 1.0000, Gtd(1787134500000000000)))"
+      ],
+      "since_history_ms": 196.03873,
+      "venue": [
+        [
+          {
+            "ours": -0.0,
+            "px": 0.2,
+            "qty": 20.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.18,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.15,
+            "qty": 50.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.1,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.02,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.01,
+            "qty": 5375.0
+          }
+        ],
+        [
+          {
+            "ours": -0.0,
+            "px": 0.33,
+            "qty": 60.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.39,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.8,
+            "qty": 10.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.9,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.98,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.99,
+            "qty": 5375.0
+          }
+        ]
+      ]
+    },
+    {
+      "commands": [
+        "Modify { token: Token(2), order_id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.2700, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }"
+      ],
+      "fair": 0.16497448979591836,
+      "historical": "([(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000)], [(0.3300, 60.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000)])",
+      "inputs": "[Execution(ExecutionFrame { exec_id: \"X11\", order: VenueOrder { id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", side: Sell, intent: BuyShort, px: 0.3900, qty: 1.0000, cum_qty: 0.0000, leaves_qty: 1.0000, state: New }, kind: Replace, fill: None, reject: None, unsolicited: None, transact_ns: Some(1787015634198950884) })]",
+      "ns": 1787015634222501911,
+      "orders": [
+        "Sell PendingReplace px=0.3900 qty=1.0000 modify=Some((0.2700, 1.0000, Gtd(1787134500000000000)))",
+        "Buy PendingReplace px=0.0600 qty=1.0000 modify=Some((0.1800, 1.0000, Gtd(1787134500000000000)))"
+      ],
+      "since_history_ms": 239.986911,
+      "venue": [
+        [
+          {
+            "ours": -0.0,
+            "px": 0.2,
+            "qty": 20.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.15,
+            "qty": 50.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.1,
+            "qty": 251.0
+          },
+          {
+            "ours": 1.0,
+            "px": 0.06,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.02,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.01,
+            "qty": 5375.0
+          }
+        ],
+        [
+          {
+            "ours": -0.0,
+            "px": 0.27,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.33,
+            "qty": 60.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.8,
+            "qty": 10.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.9,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.98,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.99,
+            "qty": 5375.0
+          }
+        ]
+      ]
+    },
+    {
+      "commands": [
+        "Modify { token: Token(3), order_id: \"SIM3\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.0600, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }"
+      ],
+      "fair": 0.16497448979591836,
+      "historical": "([(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000)], [(0.3300, 60.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000)])",
+      "inputs": "[Execution(ExecutionFrame { exec_id: \"X12\", order: VenueOrder { id: \"SIM3\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", side: Buy, intent: BuyLong, px: 0.1800, qty: 1.0000, cum_qty: 0.0000, leaves_qty: 1.0000, state: New }, kind: Replace, fill: None, reject: None, unsolicited: None, transact_ns: Some(1787015634199090758) })]",
+      "ns": 1787015634226069978,
+      "orders": [
+        "Sell PendingReplace px=0.3900 qty=1.0000 modify=Some((0.2700, 1.0000, Gtd(1787134500000000000)))",
+        "Buy PendingReplace px=0.1800 qty=1.0000 modify=Some((0.0600, 1.0000, Gtd(1787134500000000000)))"
+      ],
+      "since_history_ms": 243.554978,
+      "venue": [
+        [
+          {
+            "ours": -0.0,
+            "px": 0.2,
+            "qty": 20.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.15,
+            "qty": 50.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.1,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.06,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.02,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.01,
+            "qty": 5375.0
+          }
+        ],
+        [
+          {
+            "ours": -0.0,
+            "px": 0.27,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.33,
+            "qty": 60.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.8,
+            "qty": 10.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.9,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.98,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.99,
+            "qty": 5375.0
+          }
+        ]
+      ]
+    },
+    {
+      "commands": [
+        "Modify { token: Token(3), order_id: \"SIM3\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.1800, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }",
+        "Modify { token: Token(2), order_id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.3900, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }"
+      ],
+      "fair": 0.280774647887324,
+      "historical": "([(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000)], [(0.3300, 60.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000)])",
+      "inputs": "[Book(BookFrame { slug: \"aec-modus-arnspe-andbae-2026-08-19\", bids: [(0.2000, 20.0000), (0.1800, 1.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000), (0.0100, 5375.0000)], offers: [(0.3300, 60.0000), (0.3900, 1.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000), (0.9900, 5375.0000)], state: Open, transact_ns: Some(1787015634199090758), shares_traded: Some(0.0000), settlement: None })]",
+      "ns": 1787015634300418756,
+      "orders": [
+        "Sell PendingReplace px=0.2700 qty=1.0000 modify=Some((0.3900, 1.0000, Gtd(1787134500000000000)))",
+        "Buy PendingReplace px=0.0600 qty=1.0000 modify=Some((0.1800, 1.0000, Gtd(1787134500000000000)))"
+      ],
+      "since_history_ms": 317.903756,
+      "venue": [
+        [
+          {
+            "ours": -0.0,
+            "px": 0.2,
+            "qty": 20.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.18,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.15,
+            "qty": 50.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.1,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.02,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.01,
+            "qty": 5375.0
+          }
+        ],
+        [
+          {
+            "ours": -0.0,
+            "px": 0.33,
+            "qty": 60.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.39,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.8,
+            "qty": 10.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.9,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.98,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.99,
+            "qty": 5375.0
+          }
+        ]
+      ]
+    },
+    {
+      "commands": [
+        "Modify { token: Token(2), order_id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", px: 0.2700, qty: 1.0000, tif: Gtd(1787134500000000000), post_only: true, priority: Quote }"
+      ],
+      "fair": 0.16497448979591836,
+      "historical": "([(0.2000, 20.0000), (0.1500, 50.0000), (0.1000, 251.0000), (0.0200, 95.0000)], [(0.3300, 60.0000), (0.8000, 10.0000), (0.9000, 251.0000), (0.9800, 95.0000)])",
+      "inputs": "[Execution(ExecutionFrame { exec_id: \"X15\", order: VenueOrder { id: \"SIM2\", slug: \"aec-modus-arnspe-andbae-2026-08-19\", side: Sell, intent: BuyShort, px: 0.3900, qty: 1.0000, cum_qty: 0.0000, leaves_qty: 1.0000, state: New }, kind: Replace, fill: None, reject: None, unsolicited: None, transact_ns: Some(1787015634314707743) })]",
+      "ns": 1787015634330194875,
+      "orders": [
+        "Sell PendingReplace px=0.3900 qty=1.0000 modify=Some((0.2700, 1.0000, Gtd(1787134500000000000)))",
+        "Buy PendingReplace px=0.0600 qty=1.0000 modify=Some((0.1800, 1.0000, Gtd(1787134500000000000)))"
+      ],
+      "since_history_ms": 347.679875,
+      "venue": [
+        [
+          {
+            "ours": -0.0,
+            "px": 0.2,
+            "qty": 20.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.15,
+            "qty": 50.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.1,
+            "qty": 251.0
+          },
+          {
+            "ours": 1.0,
+            "px": 0.06,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.02,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.01,
+            "qty": 5375.0
+          }
+        ],
+        [
+          {
+            "ours": -0.0,
+            "px": 0.27,
+            "qty": 1.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.33,
+            "qty": 60.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.8,
+            "qty": 10.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.9,
+            "qty": 251.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.98,
+            "qty": 95.0
+          },
+          {
+            "ours": -0.0,
+            "px": 0.99,
+            "qty": 5375.0
+          }
+        ]
+      ]
+    }
+  ]
+}

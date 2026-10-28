@@ -1,0 +1,29 @@
+# Normal darts discovery; every eligible discovered market uses the probe.
+# No session timeout: continues until stopped or a market becomes ineligible.
+# Distant quotes can still fill.
+[strategies.default]
+kind = "latency_probe"
+max_size = 0.1                 # use venue minimum quantity, or skip if larger
+reprice_s = 2.0                # reprice a market at most every 2 s, and only on received input
+
+[risk]
+max_position = 0.1
+max_order_size = 0.1
+max_orders_total = 40
+max_market_loss = 2.0           # USD worst-case exposure, including resting orders
+max_account_loss = 20.0        # USD worst-case exposure across all markets
+daily_loss_limit = 0.05
+market_loss_limit = 0.05
+max_fills_per_market_per_min = 0
+# Intentionally permit distant prices in this dedicated probe config.
+# Fair value remains the real book microprice; it is not fabricated to bypass risk.
+max_dev_from_fair = 0.75
+
+# Probe orders expire in at most 16 seconds (15 seconds rounded up).
+# They are repriced by the strategy, never passively renewed by housekeeping.
+
+[execution]
+# Disable proactive local throttling for the latency comparison.
+# Actual HTTP 429 responses still trigger shared exponential backoff.
+rate_limit_enabled = false
+core_spin_us = 1000000        # keeps the core thread from sleeping between passes (one CPU busy) to skip the OS wake-up

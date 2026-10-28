@@ -1,0 +1,104 @@
+# pmbot configuration. Every key is optional; omitted keys use the defaults shown.
+# Unknown keys are errors, so a typo fails at startup instead of silently using a default.
+# Copy to config/pmbot.toml and run: cargo run --release -p pm-live -- --config config/pmbot.toml
+
+[markets]
+types = ["darts_match_winner"]  # sportsMarketTypes to track
+book_depth = 20                 # price levels per side kept from each book, best first; 0 = all
+vwap_depth = 3                  # best price levels per side included in the displayed VWAP; 0 = all kept
+
+# ---------------------------------------------------------------- strategies
+# Named profiles. `kind` picks the strategy; the other keys are its parameters. Every
+# parameter has a backtested default, so `kind` alone works.
+# The mid-based market makers quote around others' mid and never cross their touch.
+#
+#   pre_match    quote before the match only; stop `stop_before_start_s` before the scheduled start
+#                (defaults: 15¢ half-spread, inventory capped at 3, 1¢ skew per contract)
+#   full_match   one width before the start and in play (defaults: 15¢, no inventory cap)
+#   two_phase    `pre_half_spread` pre-match, `live_half_spread` from `widen_before_start_s`
+#                before the start and through play (defaults: 10¢ → 15¢ from 5 min before)
+#   two_phase_vwap  the same two-phase parameters, centred on others' top 3 price levels per side
+#                (trading depth is fixed at 3, independent of markets.vwap_depth)
+#   off          track the market, never quote
+#   latency_probe  operator-run latency diagnostics (docs/latency-probe.md)
+#
+# Shared parameters: size, max_spread (skip markets whose spread is wider), max_inventory
+# (0: off), skew_per_contract, price_band_lo / price_band_hi.
+# Markets that no route matches use the profile named "default" (a default pre_match if
+# you don't define one).
+
+[strategies.default]
+kind = "pre_match"
+size = 1.0                      # contracts per quote
+half_spread = 0.15              # distance from mid to each quote
+max_spread = 0.40               # don't quote when others' spread is wider than this
+stop_before_start_s = 0.0       # stop at the scheduled start
+max_inventory = 3.0             # at |position| >= 3, quote only the reducing side
+skew_per_contract = 0.01        # move both quotes 1¢ against each contract held
+price_band_lo = 0.02
+price_band_hi = 0.98
+
+[strategies.in_play]
+kind = "two_phase"
+pre_half_spread = 0.10
+live_half_spread = 0.15
+widen_before_start_s = 300.0
+
+[strategies.off]
+kind = "off"
+
+# ---------------------------------------------------------------- routes
+# Each route picks a profile for the markets it matches; first match wins.
+# Matchers (all given ones must match): slug, event, league (all take `*` wildcards), market_type.
+# League values carry a season (e.g. "modus-super-series-2026"), so match them with a wildcard.
+# The bot logs `route_unused` for a route that matches none of the listed markets.
+# `set` overrides some of the profile's parameters for just these markets.
+
+# One ticker, bigger size:
+# [[routes]]
+# slug = "aec-pdcdarts-luklit-wilcon-2026-10-23"
+# strategy = "default"
+# set = { size = 2.0 }
+
+# A whole league quoting through the match:
+# [[routes]]
+# league = "modus*"
+# strategy = "in_play"
+
+# Every market of one player, switched off:
+# [[routes]]
+# slug = "*-luklit-*"
+# strategy = "off"
+
+# ---------------------------------------------------------------- risk and execution
+
+[risk]
+max_position = 20.0
+max_order_size = 5.0
+max_orders_total = 40
+max_market_loss = 10.0          # worst-case loss per market (incl. resting orders)
+max_account_loss = 40.0
+daily_loss_limit = 15.0
+market_loss_limit = 5.0
+book_stale_after_trade_s = 10.0  # a trade with no book after it this long: pull that market's quotes (0: off)
+book_stale_live_s = 90.0        # live match with no book this long: the same (0: off)
+slow_exchange_s = 60.0          # how long strategies are told the exchange is slow after a transient reject
+
+[execution]
+rate_limit_enabled = true     # local REST budget; false still honors HTTP 429 backoff
+ack_timeout_s = 3.0
+cancel_timeout_s = 2.0
+housekeeping_ms = 250
+core_spin_us = 0                # live: poll for input this long after each core pass before sleeping (0: sleep at once; 1000000: never sleep, one CPU busy)
+redecide_all_s = 5.0            # backstop full re-decide with no input (0: off); time boundaries are exact
+pre_match_gtd_after_start_s = 300.0
+inplay_gtd_s = 120.0
+gtd_refresh_before_s = 30.0
+reprice_min_ticks = 2          # a live quote moves only for a target this many ticks away (1: any change)
+
+# Per-league match format. None of the current strategies read it; it is kept for a
+# future in-play model.
+# [leagues.pdcdarts]
+# legs_to_win = 7
+# hold_rate = 0.6
+# orientation_verified = false

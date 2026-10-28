@@ -1,0 +1,24 @@
+[package]
+name = "pm-core"
+edition.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+pm-types = { path = "../pm-types" }
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+pm-venue = { path = "../pm-venue" }
+toml.workspace = true
+
+[[bench]]
+name = "tick"
+harness = false
+
+[[bench]]
+name = "components"
+harness = false

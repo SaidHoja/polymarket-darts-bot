@@ -1,0 +1,187 @@
+{
+  "path": "data-analysis/polymarket_us_darts_history.parquet",
+  "file_bytes": 389986917,
+  "rows_read": 5120735,
+  "row_groups": 107,
+  "batch_size": 50000,
+  "schema": "record_type: string\nfeed: string\nmarket_slug: string\nevent_slug: string\nevent_time: timestamp[us, tz=UTC]\nsending_time: timestamp[us, tz=UTC]\nwire_received_at: timestamp[us, tz=UTC]\ndt: date32[day]\nprice: decimal128(38, 9)\nsize: decimal128(38, 9)\nside: string\naction: string\nentry_id: string\norder_id: string\ntrade_id: string\nmsg_seq: int64\nentry_index: int32\nis_snapshot_marker: bool\nstat_type: string\nvalue: decimal128(38, 9)\nstate: string\nsource_record_json: string\n-- schema metadata --\ndescription: 'Polymarket US darts captured public market history and late' + 188\nversion: '1'",
+  "null_counts": {
+    "action": 276269,
+    "dt": 1405,
+    "entry_id": 225231,
+    "entry_index": 203312,
+    "event_slug": 201907,
+    "event_time": 40354,
+    "feed": 0,
+    "is_snapshot_marker": 5081786,
+    "market_slug": 0,
+    "msg_seq": 203312,
+    "order_id": 238903,
+    "price": 224656,
+    "record_type": 0,
+    "sending_time": 203312,
+    "side": 238903,
+    "size": 208945,
+    "stat_type": 5100805,
+    "state": 4918997,
+    "trade_id": 5107063,
+    "value": 5107120,
+    "wire_received_at": 1405
+  },
+  "record_type_counts": {
+    "book_change": 4844466,
+    "book_snapshot": 240687,
+    "market_stat": 19930,
+    "trade": 14247,
+    "market_metadata": 1405
+  },
+  "feed_counts": {
+    "fix": 4917423,
+    "websocket": 201907,
+    "metadata": 1405
+  },
+  "record_type_feed_counts": [
+    {
+      "record_type": "book_change",
+      "feed": "fix",
+      "rows": 4844466
+    },
+    {
+      "record_type": "book_snapshot",
+      "feed": "websocket",
+      "rows": 201738
+    },
+    {
+      "record_type": "book_snapshot",
+      "feed": "fix",
+      "rows": 38949
+    },
+    {
+      "record_type": "market_stat",
+      "feed": "fix",
+      "rows": 19930
+    },
+    {
+      "record_type": "trade",
+      "feed": "fix",
+      "rows": 14078
+    },
+    {
+      "record_type": "market_metadata",
+      "feed": "metadata",
+      "rows": 1405
+    },
+    {
+      "record_type": "trade",
+      "feed": "websocket",
+      "rows": 169
+    }
+  ],
+  "market_count": 1405,
+  "event_count": 1570,
+  "top_markets": [
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-gerpri",
+      "rows": 199527
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-garand",
+      "rows": 183932
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-stebun",
+      "rows": 176587
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-jamwad",
+      "rows": 175592
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-giavee",
+      "rows": 170658
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-wesnij",
+      "rows": 166235
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-lukhum",
+      "rows": 165595
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-chrdob",
+      "rows": 165498
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-josroc",
+      "rows": 165390
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-robcro",
+      "rows": 163110
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-micger",
+      "rows": 159236
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-ryasea",
+      "rows": 157443
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-dirdui",
+      "rows": 155921
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-dannop",
+      "rows": 147872
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-natasp",
+      "rows": 142670
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-kevdoe",
+      "rows": 136172
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-luklit",
+      "rows": 132190
+    },
+    {
+      "market_slug": "tec-pdc-worldchamp-2027-01-03-w-joncla",
+      "rows": 121544
+    },
+    {
+      "market_slug": "aec-pdcdarts-gerpri-joncla-2026-10-02",
+      "rows": 100447
+    },
+    {
+      "market_slug": "aec-pdcdarts-natasp-ryajoy-2026-10-02",
+      "rows": 68448
+    }
+  ],
+  "snapshot_marker_counts": {
+    "None": 5081786,
+    "False": 37366,
+    "True": 1583
+  },
+  "time_bounds": {
+    "event_time": {
+      "min": "2026-07-29T03:33:40.504967+00:00",
+      "max": "2026-10-15T07:02:43.091940+00:00"
+    },
+    "sending_time": {
+      "min": "2026-08-05T20:21:12.964996+00:00",
+      "max": "2026-10-15T07:02:43.104120+00:00"
+    },
+    "wire_received_at": {
+      "min": "2026-07-29T03:38:38.422370+00:00",
+      "max": "2026-10-15T07:02:43.104687+00:00"
+    },
+    "dt": {
+      "min": "2026-07-29",
+      "max": "2026-10-15"
+    }
+  }
+}

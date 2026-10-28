@@ -1,0 +1,1139 @@
+{
+  "command": "cargo run --release -p pm-backtest -- run --config /tmp/pmbot-vwap-compare.toml --strategy mid,vwap --fill-model base,pessimistic --lag 1 --threads 4 --out backtests/vwap3-two-phase-2026-10-28",
+  "comparison_config_toml": "# Live test of mix_10c_pre_15c_live_inv (plans/10-strategy-research.md): quotes at others'\n# mid \u00b1 10\u00a2 pre-match, widening to \u00b1 15\u00a2 from 5 minutes before the scheduled start and\n# through play, inventory capped at 3. Size 1, the same tight limits as pmbot-m3-live.toml.\n#\n#   cargo build --release -p pm-live\n#   ./target/release/pmbot --mode live --config config/pmbot-two-phase-live.toml --ui 127.0.0.1:8787\n\n[markets]\ntypes = [\"darts_match_winner\"]\n\n[strategies.mid]\nkind = \"two_phase\"\nsize = 1.0\npre_half_spread = 0.10\nlive_half_spread = 0.15\nwiden_before_start_s = 900.0    # switch to 15\u00a2 15 minutes before the scheduled start\nmax_spread = 0.40\nmax_inventory = 4.0             # at |position| >= 4, quote only the reducing side\nskew_per_contract = 0.01\n\n[strategies.off]\nkind = \"off\"\n\n[risk]\nmax_position = 8.0\nmax_order_size = 2.0\nmax_orders_total = 40\nmax_market_loss = 6.0\nmax_account_loss = 30.0\ndaily_loss_limit = 15.0         # below max_account_loss, so the daily kill fires first\nmarket_loss_limit = 2.0\nmax_dev_from_fair = 0.16    # \u00b115\u00a2 quotes round outward to the tick, up to 15.5\u00a2 from fair\n\n[execution]\nrate_limit_enabled = false    # local REST budget off; HTTP 429 backoff still applies\ncore_spin_us = 1000000        # experiment: core thread never sleeps (one CPU busy); 0 restores sleeping\n\n[strategies.vwap]\nkind = \"two_phase_vwap\"\nsize = 1.0\npre_half_spread = 0.10\nlive_half_spread = 0.15\nwiden_before_start_s = 900.0    # switch to 15\u00a2 15 minutes before the scheduled start\nmax_spread = 0.40\nmax_inventory = 4.0             # at |position| >= 4, quote only the reducing side\nskew_per_contract = 0.01\n\n",
+  "implementation_sha256": {
+    "crates/pm-backtest/src/book.rs": "d746197215f5d3f5b98f4b855c7ca24cd16aaa1df32e5b6a0e9be155b347ab91",
+    "crates/pm-backtest/src/data.rs": "4a3a226863f71b71282d171295f76ad59a751551c498fa3ffc7dc4f253f0f9b6",
+    "crates/pm-backtest/src/lib.rs": "7314ee2032aef08b43814db3b81f03f4b9f0ec10b04509b43e00b7c61c20f581",
+    "crates/pm-backtest/src/main.rs": "11e778046d007458fbb96b63d6b58ff61af7753a329fd0a9e27ffefbef88114a",
+    "crates/pm-backtest/src/report.rs": "c6a68d0aff4f5561844aad6b3cea7b3963c406209e023067a7578d73be4b03c1",
+    "crates/pm-backtest/src/sim.rs": "81bb991c68212793df6a9694b6541e97f57f603360f0c1ad00ec7fdaa7d5a7a7",
+    "crates/pm-core/src/config.rs": "b630e68e6c8d942d9e4eca6dfcc7314867d54eb2a8af0dd0d0576239e016f7c7",
+    "crates/pm-core/src/core.rs": "f4d64b56c883c2136c46ccfdfa35e6bf58c3e9e5d9a0fbe51502ff6ed31030f1",
+    "crates/pm-core/src/game.rs": "1d788d4f0b976918eb51a05dc2c699992de7bd91c6204c5e98e5f1656f1c0e29",
+    "crates/pm-core/src/lib.rs": "3aa14ecf2de5d23009f47b9e1d6173defa9356573e1f284a9423bf67e26024ed",
+    "crates/pm-core/src/market_data.rs": "63b41d8f8b6fde862492a61d4fc85b4e50fe5d5ab89e6d79746951bd4f1396b7",
+    "crates/pm-core/src/orders.rs": "6bca2ad41decc9005dc0c69962ffab92d98cbb019de18424801effbdffe575b7",
+    "crates/pm-core/src/portfolio.rs": "bddcbeb66ee0b4492ce89e537a7135bfe8fcbc8f4bf4d80a309a74484ef4fa69",
+    "crates/pm-core/src/risk.rs": "0a47e545aed2090378f093cae9a9e75f0c8e26f26bf517a1b2e45435909920ce",
+    "crates/pm-core/src/snapshot.rs": "e89fc589248aedd3af3c54953d200aac487d34f9b21a92d3d177206f0925f108",
+    "crates/pm-core/src/strategy/latency_probe.rs": "7dc6ba68fe96ef4a987420be692f24cb4eeeec8bc2b5522acc5ffcc06c30ca3f",
+    "crates/pm-core/src/strategy/mod.rs": "74f758005a140c3a8c02235e4abac2e608c422587fb109ee6fe3d1d98f31a61e",
+    "crates/pm-core/src/strategy/spread.rs": "5e08875e4258a50a5b51b4fba0d79b83c02bbb3111baebbf8c882c5cee3a7701",
+    "crates/pm-live/src/admin.rs": "545b2017839099f8637074345979744ebf238e64513296d0581c3179bde582e3",
+    "crates/pm-live/src/bench.rs": "59605ae8e936203d263097902ed6467cc8d3999c258bd408349386980df27423",
+    "crates/pm-live/src/feeds.rs": "79c8c7b39bb0571493c97d7b361abf08f9a663894512dafa11ea463a8198edfd",
+    "crates/pm-live/src/gateway.rs": "872d70271c5414f6746fe41e67c83d56217f3f4799e26db7b6484fe6e2b608a0",
+    "crates/pm-live/src/inbox.rs": "5408c06cb0075cc1bbc45f050ce3c9a157006ee4649046e8aa9ee18d354bee85",
+    "crates/pm-live/src/journal.rs": "ca3a508c401db8a4ec70e5fb7d9c124845dc4813c8953f8b52ba6afd83691ccf",
+    "crates/pm-live/src/main.rs": "5293efab8cd7305a28d73c0e3f8f310f3e2a09e4dffbae9941b040aa54804cc6",
+    "crates/pm-live/src/metrics.rs": "933e0c305323c2c872f1cc4c28306022309e6ae9324193b0bd99274b5369f2ab",
+    "crates/pm-live/src/priority.rs": "fe4769fe4044cf439aa890756a3addaae48de491223179ec4621a0fdfcf655b2",
+    "crates/pm-live/src/risk_file.rs": "f1afc1c9bcdbbe6cdc672ae7ae52f38ee6f0bd056c0177ca34f133bf65b6f9a8",
+    "crates/pm-live/src/timing.rs": "0664b34ee47149bee4c9260b290fbed7006fa5c1e799d051791039ca3d8cf12f",
+    "crates/pm-live/src/ui.rs": "44c8b0af5fbab69abcfe367f6b092da8f6352ef8cf3f1f975af1bc2a67928309",
+    "crates/pm-types/src/event.rs": "2ae3eca72e85d4310151e6caaa087741828d03ae66ef893dfee05446d5a52d52",
+    "crates/pm-types/src/lib.rs": "4eb8780ddc99095c68c0c728f2068d82ac4f62633236132921398baa44f45e48",
+    "crates/pm-types/src/num.rs": "28ea6538a34eb7d4955ccface870798cca8e77c4ee27e5110c2b78fb04277322",
+    "crates/pm-types/src/time.rs": "49d51028ce6ed73dcda42ac13c5f68bd4b4f96306980d0b992040a791ea30446",
+    "crates/pm-types/src/venue.rs": "90967b93d69730dbcb8b472b59399df2e00724febacb49295f3bdac7372956fd",
+    "crates/pm-venue/src/auth.rs": "30587f5ba1f81a21fa1981b28c27819c42bec0e7af554964a5b69d3c21d5e3e8",
+    "crates/pm-venue/src/decode.rs": "0ca80e32f10df2583e7f48f38f488a0939a72d67ad2b3262c95cab5e079eee60",
+    "crates/pm-venue/src/lib.rs": "8f667d9d3aaff875bbb2cd3d5b853f62f7cf0d05856bd17c7fafba418e2bf170",
+    "crates/pm-venue/src/rest.rs": "10cfb156469995d83a60e30bdc0429874cfe4fdab49fd735d22ef8a9dd17793b",
+    "crates/pm-venue/src/ws.rs": "912395575161c0c1fd6594847ae2d2108859458ea113892a5438767efa4226eb"
+  },
+  "variants": [
+    {
+      "config": {
+        "execution": {
+          "ack_timeout_s": 3.0,
+          "cancel_timeout_s": 2.0,
+          "core_spin_us": 1000000,
+          "gtd_refresh_before_s": 30.0,
+          "housekeeping_ms": 250,
+          "inplay_gtd_s": 120.0,
+          "pre_match_gtd_after_start_s": 300.0,
+          "rate_limit_enabled": false,
+          "reconcile_balance_s": 300.0,
+          "reconcile_positions_s": 60.0,
+          "redecide_all_s": 5.0,
+          "unknown_order_s": 5.0,
+          "unmatched_attach_s": 2.0
+        },
+        "leagues": {},
+        "markets": {
+          "book_depth": 20,
+          "types": [
+            "darts_match_winner"
+          ],
+          "vwap_depth": 3
+        },
+        "risk": {
+          "book_band": 0.1,
+          "book_stale_after_trade_s": 10.0,
+          "book_stale_live_s": 90.0,
+          "daily_loss_limit": 15.0,
+          "fill_pause_s": 300.0,
+          "game_stale_s": 5.0,
+          "market_loss_limit": 2.0,
+          "market_pause_s": 60.0,
+          "max_account_loss": 30.0,
+          "max_book_moved_per_market_per_min": 5,
+          "max_dev_from_fair": 0.16,
+          "max_fills_per_market_per_min": 10,
+          "max_market_loss": 6.0,
+          "max_order_size": 2.0,
+          "max_orders_total": 40,
+          "max_position": 8.0,
+          "max_rejects_per_min": 10,
+          "reject_pause_s": 30.0,
+          "slow_exchange_s": 60.0
+        },
+        "routes": [],
+        "strategies": {
+          "default": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "mid": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "off": {
+            "kind": "off"
+          },
+          "vwap": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          }
+        }
+      },
+      "data_sha256": "04820fd4723b76ccde2a76a34fd4633dd193fe34d0e9f585b7de97a3d26abfca",
+      "excluded": [],
+      "git_revision": "15bad8be0a80ee024279bf2e0dbb871067248b78",
+      "groups": [
+        {
+          "contracts": 1238.8099999999984,
+          "fees": 0.0,
+          "fills": 1563,
+          "fills_by_how": {
+            "cross": 1084,
+            "queue": 31,
+            "through": 448
+          },
+          "inventory": 49.14369999999998,
+          "markets": 242,
+          "markets_with_pnl": 230,
+          "max_drawdown": 4.236600000000001,
+          "mean_uptime": 0.7445271758476861,
+          "mo_10s": 0.03378244109429396,
+          "mo_1s": 0.03142784976586053,
+          "mo_60s": 0.05111855373091323,
+          "mo_settle": 0.049884582409938774,
+          "name": "all",
+          "order_requests": 1721650,
+          "pnl": 61.6763,
+          "pnl_ci95": [
+            40.132000000000026,
+            82.59319999999997
+          ],
+          "pnl_per_market": 0.2681578260869565,
+          "rate_limited_s": 0,
+          "read_requests": 379268,
+          "rejects": 2332,
+          "req_per_s_max": 51,
+          "spread": 12.532600000000002
+        },
+        {
+          "contracts": 401.1500000000003,
+          "fees": 0.0,
+          "fills": 500,
+          "fills_by_how": {
+            "cross": 345,
+            "queue": 9,
+            "through": 146
+          },
+          "inventory": 12.374200000000002,
+          "markets": 71,
+          "markets_with_pnl": 71,
+          "max_drawdown": 4.236600000000001,
+          "mean_uptime": 0.6909882286688309,
+          "mo_10s": 0.032708606268265696,
+          "mo_1s": 0.022012976210281164,
+          "mo_60s": 0.04045996089309271,
+          "mo_settle": 0.026649133740496062,
+          "name": "dev 08-14..08-19",
+          "order_requests": 682745,
+          "pnl": 10.6903,
+          "pnl_ci95": [
+            -2.7467000000000006,
+            23.530800000000006
+          ],
+          "pnl_per_market": 0.15056760563380284,
+          "rate_limited_s": 0,
+          "read_requests": 130998,
+          "rejects": 1052,
+          "req_per_s_max": 51,
+          "spread": -1.6839000000000004
+        },
+        {
+          "contracts": 837.6599999999993,
+          "fees": 0.0,
+          "fills": 1063,
+          "fills_by_how": {
+            "cross": 739,
+            "queue": 22,
+            "through": 302
+          },
+          "inventory": 36.76949999999999,
+          "markets": 171,
+          "markets_with_pnl": 159,
+          "max_drawdown": 2.01,
+          "mean_uptime": 0.7667567971909534,
+          "mo_10s": 0.03423507423061409,
+          "mo_1s": 0.03525833088915466,
+          "mo_60s": 0.05606053258554898,
+          "mo_settle": 0.06104426325682755,
+          "name": "holdout 10-01..10-15",
+          "order_requests": 1038905,
+          "pnl": 50.986,
+          "pnl_ci95": [
+            35.79970000000001,
+            68.16129999999998
+          ],
+          "pnl_per_market": 0.32066666666666666,
+          "rate_limited_s": 0,
+          "read_requests": 248270,
+          "rejects": 1280,
+          "req_per_s_max": 50,
+          "spread": 14.216500000000005
+        },
+        {
+          "contracts": 915.0999999999996,
+          "fees": 0.0,
+          "fills": 1158,
+          "fills_by_how": {
+            "cross": 796,
+            "queue": 22,
+            "through": 340
+          },
+          "inventory": 32.264149999999994,
+          "markets": 187,
+          "markets_with_pnl": 175,
+          "max_drawdown": 4.236600000000001,
+          "mean_uptime": 0.7125014356917773,
+          "mo_10s": 0.01924063135852712,
+          "mo_1s": 0.013870345359830229,
+          "mo_60s": 0.04120866302467091,
+          "mo_settle": 0.039537291682645435,
+          "name": "league=modus",
+          "order_requests": 1351555,
+          "pnl": 36.0845,
+          "pnl_ci95": [
+            18.03759999999999,
+            53.71369999999998
+          ],
+          "pnl_per_market": 0.20619714285714286,
+          "rate_limited_s": 0,
+          "read_requests": 333972,
+          "rejects": 2090,
+          "req_per_s_max": 51,
+          "spread": 3.82035
+        },
+        {
+          "contracts": 323.70999999999987,
+          "fees": 0.0,
+          "fills": 405,
+          "fills_by_how": {
+            "cross": 288,
+            "queue": 9,
+            "through": 108
+          },
+          "inventory": 16.87955,
+          "markets": 55,
+          "markets_with_pnl": 55,
+          "max_drawdown": 1.295,
+          "mean_uptime": 0.8534146923777748,
+          "mo_10s": 0.0789210816777043,
+          "mo_1s": 0.08356388057801267,
+          "mo_60s": 0.07946393816382143,
+          "mo_settle": 0.07905779864693714,
+          "name": "league=pdcdarts",
+          "order_requests": 370095,
+          "pnl": 25.5918,
+          "pnl_ci95": [
+            15.397599999999997,
+            36.66229999999998
+          ],
+          "pnl_per_market": 0.4653054545454545,
+          "rate_limited_s": 0,
+          "read_requests": 45296,
+          "rejects": 242,
+          "req_per_s_max": 50,
+          "spread": 8.712250000000001
+        }
+      ],
+      "min_agreement": 0.99,
+      "seed": 1,
+      "sim": {
+        "balance": 1000.0,
+        "book_depth": 20,
+        "book_lag_ms": 63.0,
+        "fill_model": "base",
+        "game_state": true,
+        "lag_mult": 1.0,
+        "md_lag_sigma": 0.5,
+        "order_lag_sigma": 0.3,
+        "order_oneway_ms": 20.0,
+        "rate_per_s": 15.0,
+        "seed": 1,
+        "tie_window_ns": 1000000,
+        "trade_lag_ms": 54.0
+      },
+      "split": "all",
+      "strategy": "mid",
+      "variant": "mid__base__lag1"
+    },
+    {
+      "config": {
+        "execution": {
+          "ack_timeout_s": 3.0,
+          "cancel_timeout_s": 2.0,
+          "core_spin_us": 1000000,
+          "gtd_refresh_before_s": 30.0,
+          "housekeeping_ms": 250,
+          "inplay_gtd_s": 120.0,
+          "pre_match_gtd_after_start_s": 300.0,
+          "rate_limit_enabled": false,
+          "reconcile_balance_s": 300.0,
+          "reconcile_positions_s": 60.0,
+          "redecide_all_s": 5.0,
+          "unknown_order_s": 5.0,
+          "unmatched_attach_s": 2.0
+        },
+        "leagues": {},
+        "markets": {
+          "book_depth": 20,
+          "types": [
+            "darts_match_winner"
+          ],
+          "vwap_depth": 3
+        },
+        "risk": {
+          "book_band": 0.1,
+          "book_stale_after_trade_s": 10.0,
+          "book_stale_live_s": 90.0,
+          "daily_loss_limit": 15.0,
+          "fill_pause_s": 300.0,
+          "game_stale_s": 5.0,
+          "market_loss_limit": 2.0,
+          "market_pause_s": 60.0,
+          "max_account_loss": 30.0,
+          "max_book_moved_per_market_per_min": 5,
+          "max_dev_from_fair": 0.16,
+          "max_fills_per_market_per_min": 10,
+          "max_market_loss": 6.0,
+          "max_order_size": 2.0,
+          "max_orders_total": 40,
+          "max_position": 8.0,
+          "max_rejects_per_min": 10,
+          "reject_pause_s": 30.0,
+          "slow_exchange_s": 60.0
+        },
+        "routes": [],
+        "strategies": {
+          "default": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "mid": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "off": {
+            "kind": "off"
+          },
+          "vwap": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          }
+        }
+      },
+      "data_sha256": "04820fd4723b76ccde2a76a34fd4633dd193fe34d0e9f585b7de97a3d26abfca",
+      "excluded": [],
+      "git_revision": "15bad8be0a80ee024279bf2e0dbb871067248b78",
+      "groups": [
+        {
+          "contracts": 1229.2999999999984,
+          "fees": 0.0,
+          "fills": 1552,
+          "fills_by_how": {
+            "cross": 1094,
+            "through": 458
+          },
+          "inventory": 50.08019999999999,
+          "markets": 242,
+          "markets_with_pnl": 230,
+          "max_drawdown": 4.236600000000001,
+          "mean_uptime": 0.7444917497173239,
+          "mo_10s": 0.03439186552603933,
+          "mo_1s": 0.031961869519749,
+          "mo_60s": 0.05111735856174817,
+          "mo_settle": 0.04989257215515916,
+          "name": "all",
+          "order_requests": 1714324,
+          "pnl": 61.21170000000001,
+          "pnl_ci95": [
+            39.960799999999985,
+            81.6449
+          ],
+          "pnl_per_market": 0.2661378260869566,
+          "rate_limited_s": 0,
+          "read_requests": 379268,
+          "rejects": 2326,
+          "req_per_s_max": 51,
+          "spread": 11.131499999999999
+        },
+        {
+          "contracts": 399.6700000000003,
+          "fees": 0.0,
+          "fills": 498,
+          "fills_by_how": {
+            "cross": 352,
+            "through": 146
+          },
+          "inventory": 13.475549999999998,
+          "markets": 71,
+          "markets_with_pnl": 71,
+          "max_drawdown": 4.236600000000001,
+          "mean_uptime": 0.6909942622369343,
+          "mo_10s": 0.03220033254396134,
+          "mo_1s": 0.02154594624735142,
+          "mo_60s": 0.040103467178292496,
+          "mo_settle": 0.027212700477894255,
+          "name": "dev 08-14..08-19",
+          "order_requests": 682290,
+          "pnl": 10.876100000000001,
+          "pnl_ci95": [
+            -2.646200000000001,
+            23.63229999999999
+          ],
+          "pnl_per_market": 0.15318450704225353,
+          "rate_limited_s": 0,
+          "read_requests": 130998,
+          "rejects": 1054,
+          "req_per_s_max": 51,
+          "spread": -2.5994500000000014
+        },
+        {
+          "contracts": 829.6299999999993,
+          "fees": 0.0,
+          "fills": 1054,
+          "fills_by_how": {
+            "cross": 742,
+            "through": 312
+          },
+          "inventory": 36.60464999999999,
+          "markets": 171,
+          "markets_with_pnl": 159,
+          "max_drawdown": 2.01,
+          "mean_uptime": 0.7667041567998244,
+          "mo_10s": 0.03532159117628203,
+          "mo_1s": 0.03618608805771017,
+          "mo_60s": 0.05624441798154219,
+          "mo_settle": 0.060850580270793146,
+          "name": "holdout 10-01..10-15",
+          "order_requests": 1032034,
+          "pnl": 50.33560000000001,
+          "pnl_ci95": [
+            35.6719,
+            67.15639999999998
+          ],
+          "pnl_per_market": 0.3165761006289309,
+          "rate_limited_s": 0,
+          "read_requests": 248270,
+          "rejects": 1272,
+          "req_per_s_max": 50,
+          "spread": 13.730950000000009
+        },
+        {
+          "contracts": 905.6099999999996,
+          "fees": 0.0,
+          "fills": 1149,
+          "fills_by_how": {
+            "cross": 804,
+            "through": 345
+          },
+          "inventory": 33.158049999999996,
+          "markets": 187,
+          "markets_with_pnl": 175,
+          "max_drawdown": 4.236600000000001,
+          "mean_uptime": 0.7124648605084067,
+          "mo_10s": 0.01996293793843527,
+          "mo_1s": 0.014509882018601468,
+          "mo_60s": 0.041108646144180895,
+          "mo_settle": 0.03943256050842581,
+          "name": "league=modus",
+          "order_requests": 1344505,
+          "pnl": 35.614700000000006,
+          "pnl_ci95": [
+            17.8886,
+            53.18509999999997
+          ],
+          "pnl_per_market": 0.20351257142857146,
+          "rate_limited_s": 0,
+          "read_requests": 333972,
+          "rejects": 2082,
+          "req_per_s_max": 51,
+          "spread": 2.4566499999999967
+        },
+        {
+          "contracts": 323.6899999999999,
+          "fees": 0.0,
+          "fills": 403,
+          "fills_by_how": {
+            "cross": 290,
+            "through": 113
+          },
+          "inventory": 16.922150000000002,
+          "markets": 55,
+          "markets_with_pnl": 55,
+          "max_drawdown": 1.295,
+          "mean_uptime": 0.85338317302764,
+          "mo_10s": 0.07891195045680312,
+          "mo_1s": 0.08357006430254035,
+          "mo_60s": 0.07946971803570436,
+          "mo_settle": 0.07907874818499189,
+          "name": "league=pdcdarts",
+          "order_requests": 369819,
+          "pnl": 25.597,
+          "pnl_ci95": [
+            15.397599999999997,
+            36.68819999999999
+          ],
+          "pnl_per_market": 0.46540000000000004,
+          "rate_limited_s": 0,
+          "read_requests": 45296,
+          "rejects": 244,
+          "req_per_s_max": 50,
+          "spread": 8.674850000000001
+        }
+      ],
+      "min_agreement": 0.99,
+      "seed": 1,
+      "sim": {
+        "balance": 1000.0,
+        "book_depth": 20,
+        "book_lag_ms": 63.0,
+        "fill_model": "pessimistic",
+        "game_state": true,
+        "lag_mult": 1.0,
+        "md_lag_sigma": 0.5,
+        "order_lag_sigma": 0.3,
+        "order_oneway_ms": 20.0,
+        "rate_per_s": 15.0,
+        "seed": 1,
+        "tie_window_ns": 1000000,
+        "trade_lag_ms": 54.0
+      },
+      "split": "all",
+      "strategy": "mid",
+      "variant": "mid__pessimistic__lag1"
+    },
+    {
+      "config": {
+        "execution": {
+          "ack_timeout_s": 3.0,
+          "cancel_timeout_s": 2.0,
+          "core_spin_us": 1000000,
+          "gtd_refresh_before_s": 30.0,
+          "housekeeping_ms": 250,
+          "inplay_gtd_s": 120.0,
+          "pre_match_gtd_after_start_s": 300.0,
+          "rate_limit_enabled": false,
+          "reconcile_balance_s": 300.0,
+          "reconcile_positions_s": 60.0,
+          "redecide_all_s": 5.0,
+          "unknown_order_s": 5.0,
+          "unmatched_attach_s": 2.0
+        },
+        "leagues": {},
+        "markets": {
+          "book_depth": 20,
+          "types": [
+            "darts_match_winner"
+          ],
+          "vwap_depth": 3
+        },
+        "risk": {
+          "book_band": 0.1,
+          "book_stale_after_trade_s": 10.0,
+          "book_stale_live_s": 90.0,
+          "daily_loss_limit": 15.0,
+          "fill_pause_s": 300.0,
+          "game_stale_s": 5.0,
+          "market_loss_limit": 2.0,
+          "market_pause_s": 60.0,
+          "max_account_loss": 30.0,
+          "max_book_moved_per_market_per_min": 5,
+          "max_dev_from_fair": 0.16,
+          "max_fills_per_market_per_min": 10,
+          "max_market_loss": 6.0,
+          "max_order_size": 2.0,
+          "max_orders_total": 40,
+          "max_position": 8.0,
+          "max_rejects_per_min": 10,
+          "reject_pause_s": 30.0,
+          "slow_exchange_s": 60.0
+        },
+        "routes": [],
+        "strategies": {
+          "default": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "mid": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "off": {
+            "kind": "off"
+          },
+          "vwap": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          }
+        }
+      },
+      "data_sha256": "04820fd4723b76ccde2a76a34fd4633dd193fe34d0e9f585b7de97a3d26abfca",
+      "excluded": [],
+      "git_revision": "15bad8be0a80ee024279bf2e0dbb871067248b78",
+      "groups": [
+        {
+          "contracts": 1500.8499999999776,
+          "fees": 0.0,
+          "fills": 2408,
+          "fills_by_how": {
+            "cross": 1897,
+            "queue": 22,
+            "through": 489
+          },
+          "inventory": -39.96619999999997,
+          "markets": 242,
+          "markets_with_pnl": 230,
+          "max_drawdown": 4.650449999999999,
+          "mean_uptime": 0.6442229085857796,
+          "mo_10s": -0.018471714398743577,
+          "mo_1s": -0.021797487656113737,
+          "mo_60s": -0.013634795085855123,
+          "mo_settle": -0.039138488955588406,
+          "name": "all",
+          "order_requests": 16788157,
+          "pnl": -58.4185,
+          "pnl_ci95": [
+            -82.97750000000003,
+            -35.31970000000002
+          ],
+          "pnl_per_market": -0.2539934782608696,
+          "rate_limited_s": 0,
+          "read_requests": 379268,
+          "rejects": 11596,
+          "req_per_s_max": 52,
+          "spread": -18.452299999999987
+        },
+        {
+          "contracts": 474.30000000000007,
+          "fees": 0.0,
+          "fills": 575,
+          "fills_by_how": {
+            "cross": 436,
+            "queue": 6,
+            "through": 133
+          },
+          "inventory": -9.260799999999998,
+          "markets": 71,
+          "markets_with_pnl": 71,
+          "max_drawdown": 4.650449999999999,
+          "mean_uptime": 0.5336852916588346,
+          "mo_10s": -0.02557083119649695,
+          "mo_1s": -0.04091351127663978,
+          "mo_60s": -0.014426195814648745,
+          "mo_settle": -0.04631667720851784,
+          "name": "dev 08-14..08-19",
+          "order_requests": 10360276,
+          "pnl": -21.967999999999993,
+          "pnl_ci95": [
+            -39.407500000000006,
+            -7.2533999999999965
+          ],
+          "pnl_per_market": -0.30940845070422524,
+          "rate_limited_s": 0,
+          "read_requests": 130998,
+          "rejects": 4820,
+          "req_per_s_max": 51,
+          "spread": -12.707200000000004
+        },
+        {
+          "contracts": 1026.5500000000043,
+          "fees": 0.0,
+          "fills": 1833,
+          "fills_by_how": {
+            "cross": 1461,
+            "queue": 16,
+            "through": 356
+          },
+          "inventory": -30.705399999999997,
+          "markets": 171,
+          "markets_with_pnl": 159,
+          "max_drawdown": 3.4099999999999993,
+          "mean_uptime": 0.690118644268897,
+          "mo_10s": -0.01537266652889706,
+          "mo_1s": -0.0138966425504985,
+          "mo_60s": -0.01326691912173426,
+          "mo_settle": -0.03579509186789861,
+          "name": "holdout 10-01..10-15",
+          "order_requests": 6427881,
+          "pnl": -36.45050000000001,
+          "pnl_ci95": [
+            -55.15780000000002,
+            -18.684100000000008
+          ],
+          "pnl_per_market": -0.22924842767295606,
+          "rate_limited_s": 0,
+          "read_requests": 248270,
+          "rejects": 6776,
+          "req_per_s_max": 52,
+          "spread": -5.745100000000001
+        },
+        {
+          "contracts": 1145.2099999999998,
+          "fees": 0.0,
+          "fills": 1711,
+          "fills_by_how": {
+            "cross": 1358,
+            "queue": 16,
+            "through": 337
+          },
+          "inventory": -38.9082,
+          "markets": 187,
+          "markets_with_pnl": 175,
+          "max_drawdown": 4.650449999999999,
+          "mean_uptime": 0.6069444543055051,
+          "mo_10s": -0.034226787245653645,
+          "mo_1s": -0.04087261105886472,
+          "mo_60s": -0.02761847149770592,
+          "mo_settle": -0.05371997502132852,
+          "name": "league=modus",
+          "order_requests": 15291222,
+          "pnl": -61.077999999999996,
+          "pnl_ci95": [
+            -83.34300000000002,
+            -39.8016
+          ],
+          "pnl_per_market": -0.34901714285714286,
+          "rate_limited_s": 0,
+          "read_requests": 333972,
+          "rejects": 9919,
+          "req_per_s_max": 52,
+          "spread": -22.16979999999999
+        },
+        {
+          "contracts": 355.6400000000011,
+          "fees": 0.0,
+          "fills": 697,
+          "fills_by_how": {
+            "cross": 539,
+            "queue": 6,
+            "through": 152
+          },
+          "inventory": -1.0579999999999998,
+          "markets": 55,
+          "markets_with_pnl": 55,
+          "max_drawdown": 1.44915,
+          "mean_uptime": 0.7709696531387107,
+          "mo_10s": 0.0339321647132041,
+          "mo_1s": 0.038354109072631405,
+          "mo_60s": 0.02939252562367055,
+          "mo_settle": 0.007478067708919074,
+          "name": "league=pdcdarts",
+          "order_requests": 1496935,
+          "pnl": 2.6594999999999986,
+          "pnl_ci95": [
+            -7.197300000000004,
+            12.708400000000003
+          ],
+          "pnl_per_market": 0.04835454545454543,
+          "rate_limited_s": 0,
+          "read_requests": 45296,
+          "rejects": 1677,
+          "req_per_s_max": 51,
+          "spread": 3.717500000000002
+        }
+      ],
+      "min_agreement": 0.99,
+      "seed": 1,
+      "sim": {
+        "balance": 1000.0,
+        "book_depth": 20,
+        "book_lag_ms": 63.0,
+        "fill_model": "base",
+        "game_state": true,
+        "lag_mult": 1.0,
+        "md_lag_sigma": 0.5,
+        "order_lag_sigma": 0.3,
+        "order_oneway_ms": 20.0,
+        "rate_per_s": 15.0,
+        "seed": 1,
+        "tie_window_ns": 1000000,
+        "trade_lag_ms": 54.0
+      },
+      "split": "all",
+      "strategy": "vwap",
+      "variant": "vwap__base__lag1"
+    },
+    {
+      "config": {
+        "execution": {
+          "ack_timeout_s": 3.0,
+          "cancel_timeout_s": 2.0,
+          "core_spin_us": 1000000,
+          "gtd_refresh_before_s": 30.0,
+          "housekeeping_ms": 250,
+          "inplay_gtd_s": 120.0,
+          "pre_match_gtd_after_start_s": 300.0,
+          "rate_limit_enabled": false,
+          "reconcile_balance_s": 300.0,
+          "reconcile_positions_s": 60.0,
+          "redecide_all_s": 5.0,
+          "unknown_order_s": 5.0,
+          "unmatched_attach_s": 2.0
+        },
+        "leagues": {},
+        "markets": {
+          "book_depth": 20,
+          "types": [
+            "darts_match_winner"
+          ],
+          "vwap_depth": 3
+        },
+        "risk": {
+          "book_band": 0.1,
+          "book_stale_after_trade_s": 10.0,
+          "book_stale_live_s": 90.0,
+          "daily_loss_limit": 15.0,
+          "fill_pause_s": 300.0,
+          "game_stale_s": 5.0,
+          "market_loss_limit": 2.0,
+          "market_pause_s": 60.0,
+          "max_account_loss": 30.0,
+          "max_book_moved_per_market_per_min": 5,
+          "max_dev_from_fair": 0.16,
+          "max_fills_per_market_per_min": 10,
+          "max_market_loss": 6.0,
+          "max_order_size": 2.0,
+          "max_orders_total": 40,
+          "max_position": 8.0,
+          "max_rejects_per_min": 10,
+          "reject_pause_s": 30.0,
+          "slow_exchange_s": 60.0
+        },
+        "routes": [],
+        "strategies": {
+          "default": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "mid": {
+            "kind": "two_phase",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          },
+          "off": {
+            "kind": "off"
+          },
+          "vwap": {
+            "kind": "two_phase_vwap",
+            "live_half_spread": 0.15,
+            "max_inventory": 4.0,
+            "max_spread": 0.4,
+            "pre_half_spread": 0.1,
+            "price_band_hi": 0.98,
+            "price_band_lo": 0.02,
+            "size": 1.0,
+            "skew_per_contract": 0.01,
+            "widen_before_start_s": 900.0
+          }
+        }
+      },
+      "data_sha256": "04820fd4723b76ccde2a76a34fd4633dd193fe34d0e9f585b7de97a3d26abfca",
+      "excluded": [],
+      "git_revision": "15bad8be0a80ee024279bf2e0dbb871067248b78",
+      "groups": [
+        {
+          "contracts": 1501.929999999977,
+          "fees": 0.0,
+          "fills": 2411,
+          "fills_by_how": {
+            "cross": 1912,
+            "through": 499
+          },
+          "inventory": -40.18274999999998,
+          "markets": 242,
+          "markets_with_pnl": 230,
+          "max_drawdown": 4.650449999999999,
+          "mean_uptime": 0.6440561724407917,
+          "mo_10s": -0.018350602525095155,
+          "mo_1s": -0.021288257131455688,
+          "mo_60s": -0.013857289673258081,
+          "mo_settle": -0.03918617651587733,
+          "name": "all",
+          "order_requests": 16688983,
+          "pnl": -58.532,
+          "pnl_ci95": [
+            -83.20130000000002,
+            -35.302400000000006
+          ],
+          "pnl_per_market": -0.25448695652173914,
+          "rate_limited_s": 0,
+          "read_requests": 379268,
+          "rejects": 11606,
+          "req_per_s_max": 52,
+          "spread": -18.349249999999984
+        },
+        {
+          "contracts": 471.30000000000007,
+          "fees": 0.0,
+          "fills": 572,
+          "fills_by_how": {
+            "cross": 440,
+            "through": 132
+          },
+          "inventory": -9.2358,
+          "markets": 71,
+          "markets_with_pnl": 71,
+          "max_drawdown": 4.650449999999999,
+          "mean_uptime": 0.5331578894208827,
+          "mo_10s": -0.02485566026482171,
+          "mo_1s": -0.03869000623311866,
+          "mo_60s": -0.013665097891566277,
+          "mo_settle": -0.04550604710375561,
+          "name": "dev 08-14..08-19",
+          "order_requests": 10292636,
+          "pnl": -21.447,
+          "pnl_ci95": [
+            -38.489799999999995,
+            -6.528900000000001
+          ],
+          "pnl_per_market": -0.30207042253521127,
+          "rate_limited_s": 0,
+          "read_requests": 130998,
+          "rejects": 4806,
+          "req_per_s_max": 51,
+          "spread": -12.211200000000003
+        },
+        {
+          "contracts": 1030.6300000000017,
+          "fees": 0.0,
+          "fills": 1839,
+          "fills_by_how": {
+            "cross": 1472,
+            "through": 367
+          },
+          "inventory": -30.946949999999987,
+          "markets": 171,
+          "markets_with_pnl": 159,
+          "max_drawdown": 3.4099999999999993,
+          "mean_uptime": 0.6901016583730347,
+          "mo_10s": -0.015546088834793262,
+          "mo_1s": -0.014145858916632476,
+          "mo_60s": -0.013945157847626212,
+          "mo_settle": -0.036272850869041987,
+          "name": "holdout 10-01..10-15",
+          "order_requests": 6396347,
+          "pnl": -37.085,
+          "pnl_ci95": [
+            -55.78209999999999,
+            -19.3473
+          ],
+          "pnl_per_market": -0.23323899371069182,
+          "rate_limited_s": 0,
+          "read_requests": 248270,
+          "rejects": 6800,
+          "req_per_s_max": 52,
+          "spread": -6.138050000000002
+        },
+        {
+          "contracts": 1142.2999999999997,
+          "fees": 0.0,
+          "fills": 1708,
+          "fills_by_how": {
+            "cross": 1364,
+            "through": 344
+          },
+          "inventory": -39.52435000000001,
+          "markets": 187,
+          "markets_with_pnl": 175,
+          "max_drawdown": 4.650449999999999,
+          "mean_uptime": 0.6067544294136367,
+          "mo_10s": -0.03398164062499995,
+          "mo_1s": -0.03996642850307801,
+          "mo_60s": -0.02769184859431435,
+          "mo_settle": -0.0539853270550058,
+          "name": "league=modus",
+          "order_requests": 15195242,
+          "pnl": -61.2226,
+          "pnl_ci95": [
+            -83.29269999999995,
+            -40.031800000000004
+          ],
+          "pnl_per_market": -0.3498434285714286,
+          "rate_limited_s": 0,
+          "read_requests": 333972,
+          "rejects": 9915,
+          "req_per_s_max": 52,
+          "spread": -21.698249999999987
+        },
+        {
+          "contracts": 359.6300000000011,
+          "fees": 0.0,
+          "fills": 703,
+          "fills_by_how": {
+            "cross": 548,
+            "through": 155
+          },
+          "inventory": -0.6583999999999993,
+          "markets": 55,
+          "markets_with_pnl": 55,
+          "max_drawdown": 1.44915,
+          "mean_uptime": 0.770882098733118,
+          "mo_10s": 0.03299866543476035,
+          "mo_1s": 0.037284321080270154,
+          "mo_60s": 0.028119757910789234,
+          "mo_settle": 0.007481578288796762,
+          "name": "league=pdcdarts",
+          "order_requests": 1493741,
+          "pnl": 2.690599999999998,
+          "pnl_ci95": [
+            -7.2187,
+            12.687100000000004
+          ],
+          "pnl_per_market": 0.048919999999999964,
+          "rate_limited_s": 0,
+          "read_requests": 45296,
+          "rejects": 1691,
+          "req_per_s_max": 51,
+          "spread": 3.349000000000002
+        }
+      ],
+      "min_agreement": 0.99,
+      "seed": 1,
+      "sim": {
+        "balance": 1000.0,
+        "book_depth": 20,
+        "book_lag_ms": 63.0,
+        "fill_model": "pessimistic",
+        "game_state": true,
+        "lag_mult": 1.0,
+        "md_lag_sigma": 0.5,
+        "order_lag_sigma": 0.3,
+        "order_oneway_ms": 20.0,
+        "rate_per_s": 15.0,
+        "seed": 1,
+        "tie_window_ns": 1000000,
+        "trade_lag_ms": 54.0
+      },
+      "split": "all",
+      "strategy": "vwap",
+      "variant": "vwap__pessimistic__lag1"
+    }
+  ],
+  "implementation_note": "Runtime Rust source hashes; excludes benches and integration test files. The simulation ran against working-tree changes on the recorded git revision."
+}

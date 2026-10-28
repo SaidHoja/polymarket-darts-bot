@@ -1,0 +1,1351 @@
+{
+  "input": "data-analysis/polymarket_us_darts_history.parquet",
+  "parquet_bytes": 389986917,
+  "parquet_rows": 5120735,
+  "invalid_metadata_rows": 0,
+  "parameters": {
+    "path": "data-analysis/polymarket_us_darts_history.parquet",
+    "output": "data-analysis/load_estimate.json",
+    "clock": "wire_received_at",
+    "batch_size": 50000,
+    "headroom": 3.0,
+    "requote_fraction": 1.0,
+    "requests_per_requote": 4.0,
+    "cpu_us_per_row": null,
+    "cpu_utilization": 0.7
+  },
+  "interpretation": [
+    "WebSocket book_snapshot rows contain full books; FIX book rows are individual entries/markers, not wire messages.",
+    "Feeds are reported separately; all includes match markets, futures and any unknown types. Do not add all to its subgroups.",
+    "Peaks use UTC-aligned half-open bins, including partial first/last bins. A rolling window can cross a bin boundary and contain up to twice the aligned maximum.",
+    "All observed peaks are lower bounds on possible future demand. Missing traffic cannot be recovered; empty seconds do not prove downtime.",
+    "Trade totals are raw recorded price*size and contracts, not deduplicated even within a feed; they are not confirmed unique venue volume or bot fills. Cumulative market stats are not summed.",
+    "JSON byte counts describe exported source records, not on-wire bytes, compressed Parquet storage, or in-memory books.",
+    "Market counts in a minute measure observed activity, not concurrent subscriptions or in-play matches.",
+    "Order request scenario = headroom * peak book rows/s * requote fraction * requests per requote. Coalescing, unchanged intents and output gating usually reduce this; retries and private traffic are excluded.",
+    "CPU sizing is only emitted with an assumed measured cost per row; no actual CPU/RAM capacity benchmark is performed."
+  ],
+  "groups": {
+    "fix/all": {
+      "rows": 4917423,
+      "record_types": {
+        "trade": 14078,
+        "market_stat": 19930,
+        "book_snapshot": 38949,
+        "book_change": 4844466
+      },
+      "markets_with_data": 326,
+      "rows_missing_selected_clock": 0,
+      "timed_rows_missing_source_json": 0,
+      "timed_trades_with_invalid_or_missing_price_size": 0,
+      "top_markets_by_rows": [
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-gerpri",
+          187658
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-garand",
+          175480
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-stebun",
+          170647
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-jamwad",
+          169273
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-giavee",
+          166653
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-chrdob",
+          159182
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-josroc",
+          158470
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-wesnij",
+          154806
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-robcro",
+          154298
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-dirdui",
+          154030
+        ]
+      ],
+      "first_timestamp_utc": "2026-08-05T20:21:12.972241+00:00",
+      "last_timestamp_utc": "2026-10-15T07:02:43.104687+00:00",
+      "seconds_with_records": 874021,
+      "calendar_seconds_inclusive": 6086492,
+      "fraction_of_calendar_seconds_with_records": 0.14360012302653155,
+      "calendar_mean_rows_per_second": 0.8079240061434403,
+      "mean_rows_per_nonempty_second": 5.62620692180165,
+      "p99_rows_per_nonempty_second": 26,
+      "recorded_source_json_bytes": 2398398975,
+      "recorded_trade_rows": 14078,
+      "recorded_trade_contracts_not_deduplicated": 179329.98,
+      "recorded_trade_price_times_size_usd_not_deduplicated": 87184.8701,
+      "max_distinct_markets_observed_in_one_utc_minute": 51,
+      "largest_intervals_between_nonempty_seconds": [
+        {
+          "from_utc": "2026-08-19T02:16:02+00:00",
+          "to_utc": "2026-09-30T22:08:54+00:00",
+          "empty_seconds": 3700371
+        },
+        {
+          "from_utc": "2026-10-04T21:06:33+00:00",
+          "to_utc": "2026-10-05T15:41:21+00:00",
+          "empty_seconds": 66887
+        },
+        {
+          "from_utc": "2026-10-14T13:40:19+00:00",
+          "to_utc": "2026-10-15T05:30:37+00:00",
+          "empty_seconds": 57017
+        },
+        {
+          "from_utc": "2026-10-07T13:29:21+00:00",
+          "to_utc": "2026-10-08T04:32:21+00:00",
+          "empty_seconds": 54179
+        },
+        {
+          "from_utc": "2026-10-10T21:07:48+00:00",
+          "to_utc": "2026-10-11T07:29:00+00:00",
+          "empty_seconds": 37271
+        }
+      ],
+      "peaks_in_utc_aligned_windows_seconds": {
+        "1": {
+          "rows": {
+            "max_count": 764,
+            "per_second": 764.0,
+            "window_start_utc": "2026-10-08T04:32:22+00:00"
+          },
+          "book_rows": {
+            "max_count": 713,
+            "per_second": 713.0,
+            "window_start_utc": "2026-10-08T04:32:22+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 379787,
+            "per_second": 379787.0,
+            "window_start_utc": "2026-10-08T04:32:22+00:00"
+          },
+          "trade_rows": {
+            "max_count": 30,
+            "per_second": 30.0,
+            "window_start_utc": "2026-10-14T12:26:34+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 4020.52,
+            "per_second": 4020.52,
+            "window_start_utc": "2026-08-18T09:33:03+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 3980.3148,
+            "per_second": 3980.3148,
+            "window_start_utc": "2026-08-18T09:33:03+00:00"
+          }
+        },
+        "10": {
+          "rows": {
+            "max_count": 1463,
+            "per_second": 146.3,
+            "window_start_utc": "2026-10-09T21:17:20+00:00"
+          },
+          "book_rows": {
+            "max_count": 1463,
+            "per_second": 146.3,
+            "window_start_utc": "2026-10-09T21:17:20+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 714635,
+            "per_second": 71463.5,
+            "window_start_utc": "2026-10-09T21:17:20+00:00"
+          },
+          "trade_rows": {
+            "max_count": 52,
+            "per_second": 5.2,
+            "window_start_utc": "2026-10-14T12:26:30+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 5486.35,
+            "per_second": 548.635,
+            "window_start_utc": "2026-08-18T09:33:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 5403.061,
+            "per_second": 540.3061,
+            "window_start_utc": "2026-08-18T09:33:00+00:00"
+          }
+        },
+        "60": {
+          "rows": {
+            "max_count": 7050,
+            "per_second": 117.5,
+            "window_start_utc": "2026-10-09T21:16:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 7021,
+            "per_second": 117.01666666666667,
+            "window_start_utc": "2026-10-09T21:16:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 3446071,
+            "per_second": 57434.51666666667,
+            "window_start_utc": "2026-10-09T21:16:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 107,
+            "per_second": 1.7833333333333334,
+            "window_start_utc": "2026-10-14T12:26:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 7361.0,
+            "per_second": 122.68333333333334,
+            "window_start_utc": "2026-08-08T03:12:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 5408.021,
+            "per_second": 90.13368333333332,
+            "window_start_utc": "2026-08-18T09:33:00+00:00"
+          }
+        },
+        "3600": {
+          "rows": {
+            "max_count": 69081,
+            "per_second": 19.189166666666665,
+            "window_start_utc": "2026-10-09T21:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 68454,
+            "per_second": 19.015,
+            "window_start_utc": "2026-10-09T21:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 33675429,
+            "per_second": 9354.285833333333,
+            "window_start_utc": "2026-10-09T21:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 333,
+            "per_second": 0.0925,
+            "window_start_utc": "2026-10-09T21:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 19851.0,
+            "per_second": 5.514166666666667,
+            "window_start_utc": "2026-08-08T03:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 7981.784999999998,
+            "per_second": 2.2171624999999993,
+            "window_start_utc": "2026-08-18T09:00:00+00:00"
+          }
+        },
+        "86400": {
+          "rows": {
+            "max_count": 722427,
+            "per_second": 8.36142361111111,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 720662,
+            "per_second": 8.34099537037037,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 352599354,
+            "per_second": 4081.0110416666666,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 2154,
+            "per_second": 0.024930555555555556,
+            "window_start_utc": "2026-10-09T00:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 23936.59,
+            "per_second": 0.27704386574074075,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 14352.0935,
+            "per_second": 0.16611219328703705,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          }
+        }
+      },
+      "sizing_scenario": {
+        "headroom_multiplier": 3.0,
+        "target_rows_per_second": 2292,
+        "target_book_rows_per_second": 2139,
+        "source_json_mbit_per_second_proxy": 9.114888,
+        "source_json_gb_per_day_if_target_peak_persisted": 98.4407904,
+        "hypothetical_order_requests_per_second": 8556.0
+      }
+    },
+    "fix/darts_match_winner": {
+      "rows": 2170916,
+      "record_types": {
+        "trade": 13745,
+        "market_stat": 17891,
+        "book_snapshot": 29547,
+        "book_change": 2109733
+      },
+      "markets_with_data": 308,
+      "rows_missing_selected_clock": 0,
+      "timed_rows_missing_source_json": 0,
+      "timed_trades_with_invalid_or_missing_price_size": 0,
+      "top_markets_by_rows": [
+        [
+          "aec-pdcdarts-gerpri-joncla-2026-10-02",
+          100446
+        ],
+        [
+          "aec-pdcdarts-natasp-ryajoy-2026-10-02",
+          68447
+        ],
+        [
+          "aec-modus-conhen-dantru-2026-10-06",
+          67118
+        ],
+        [
+          "aec-modus-conhen-stelen-2026-10-06",
+          64037
+        ],
+        [
+          "aec-modus-aartur-ashcol-2026-10-14",
+          62379
+        ],
+        [
+          "aec-pdcdarts-giavee-jamwad-2026-10-02",
+          46403
+        ],
+        [
+          "aec-pdcdarts-kevdoe-nicken-2026-10-09",
+          42098
+        ],
+        [
+          "aec-modus-dantru-stelen-2026-10-06",
+          40676
+        ],
+        [
+          "aec-modus-alespe-dantru-2026-10-07",
+          31388
+        ],
+        [
+          "aec-pdcdarts-lukhum-niezon-2026-10-02",
+          29508
+        ]
+      ],
+      "first_timestamp_utc": "2026-08-14T01:01:54.152761+00:00",
+      "last_timestamp_utc": "2026-10-15T07:02:43.104687+00:00",
+      "seconds_with_records": 451506,
+      "calendar_seconds_inclusive": 5378450,
+      "fraction_of_calendar_seconds_with_records": 0.08394723386849372,
+      "calendar_mean_rows_per_second": 0.4036322732385724,
+      "mean_rows_per_nonempty_second": 4.8081664474004775,
+      "p99_rows_per_nonempty_second": 35,
+      "recorded_source_json_bytes": 1058350007,
+      "recorded_trade_rows": 13745,
+      "recorded_trade_contracts_not_deduplicated": 152437.81,
+      "recorded_trade_price_times_size_usd_not_deduplicated": 85126.94529999999,
+      "max_distinct_markets_observed_in_one_utc_minute": 41,
+      "largest_intervals_between_nonempty_seconds": [
+        {
+          "from_utc": "2026-08-19T02:15:54+00:00",
+          "to_utc": "2026-09-30T22:08:54+00:00",
+          "empty_seconds": 3700379
+        },
+        {
+          "from_utc": "2026-10-04T21:06:33+00:00",
+          "to_utc": "2026-10-05T15:41:21+00:00",
+          "empty_seconds": 66887
+        },
+        {
+          "from_utc": "2026-10-14T13:40:19+00:00",
+          "to_utc": "2026-10-15T05:30:37+00:00",
+          "empty_seconds": 57017
+        },
+        {
+          "from_utc": "2026-10-07T13:29:21+00:00",
+          "to_utc": "2026-10-08T04:32:21+00:00",
+          "empty_seconds": 54179
+        },
+        {
+          "from_utc": "2026-10-10T21:07:48+00:00",
+          "to_utc": "2026-10-11T07:29:00+00:00",
+          "empty_seconds": 37271
+        }
+      ],
+      "peaks_in_utc_aligned_windows_seconds": {
+        "1": {
+          "rows": {
+            "max_count": 764,
+            "per_second": 764.0,
+            "window_start_utc": "2026-10-08T04:32:22+00:00"
+          },
+          "book_rows": {
+            "max_count": 713,
+            "per_second": 713.0,
+            "window_start_utc": "2026-10-08T04:32:22+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 379787,
+            "per_second": 379787.0,
+            "window_start_utc": "2026-10-08T04:32:22+00:00"
+          },
+          "trade_rows": {
+            "max_count": 30,
+            "per_second": 30.0,
+            "window_start_utc": "2026-10-14T12:26:34+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 4020.52,
+            "per_second": 4020.52,
+            "window_start_utc": "2026-08-18T09:33:03+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 3980.3148,
+            "per_second": 3980.3148,
+            "window_start_utc": "2026-08-18T09:33:03+00:00"
+          }
+        },
+        "10": {
+          "rows": {
+            "max_count": 1463,
+            "per_second": 146.3,
+            "window_start_utc": "2026-10-09T21:17:20+00:00"
+          },
+          "book_rows": {
+            "max_count": 1463,
+            "per_second": 146.3,
+            "window_start_utc": "2026-10-09T21:17:20+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 714635,
+            "per_second": 71463.5,
+            "window_start_utc": "2026-10-09T21:17:20+00:00"
+          },
+          "trade_rows": {
+            "max_count": 52,
+            "per_second": 5.2,
+            "window_start_utc": "2026-10-14T12:26:30+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 5486.35,
+            "per_second": 548.635,
+            "window_start_utc": "2026-08-18T09:33:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 5403.061,
+            "per_second": 540.3061,
+            "window_start_utc": "2026-08-18T09:33:00+00:00"
+          }
+        },
+        "60": {
+          "rows": {
+            "max_count": 7050,
+            "per_second": 117.5,
+            "window_start_utc": "2026-10-09T21:16:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 7021,
+            "per_second": 117.01666666666667,
+            "window_start_utc": "2026-10-09T21:16:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 3446071,
+            "per_second": 57434.51666666667,
+            "window_start_utc": "2026-10-09T21:16:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 107,
+            "per_second": 1.7833333333333334,
+            "window_start_utc": "2026-10-14T12:26:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 5502.35,
+            "per_second": 91.70583333333335,
+            "window_start_utc": "2026-08-18T09:33:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 5408.021,
+            "per_second": 90.13368333333332,
+            "window_start_utc": "2026-08-18T09:33:00+00:00"
+          }
+        },
+        "3600": {
+          "rows": {
+            "max_count": 69081,
+            "per_second": 19.189166666666665,
+            "window_start_utc": "2026-10-09T21:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 68454,
+            "per_second": 19.015,
+            "window_start_utc": "2026-10-09T21:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 33675429,
+            "per_second": 9354.285833333333,
+            "window_start_utc": "2026-10-09T21:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 333,
+            "per_second": 0.0925,
+            "window_start_utc": "2026-10-09T21:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 9344.17,
+            "per_second": 2.5956027777777777,
+            "window_start_utc": "2026-08-18T09:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 7981.784999999998,
+            "per_second": 2.2171624999999993,
+            "window_start_utc": "2026-08-18T09:00:00+00:00"
+          }
+        },
+        "86400": {
+          "rows": {
+            "max_count": 339312,
+            "per_second": 3.9272222222222224,
+            "window_start_utc": "2026-10-09T00:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 334846,
+            "per_second": 3.8755324074074076,
+            "window_start_utc": "2026-10-09T00:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 165845756,
+            "per_second": 1919.5110648148147,
+            "window_start_utc": "2026-10-09T00:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 2154,
+            "per_second": 0.024930555555555556,
+            "window_start_utc": "2026-10-09T00:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 23936.24,
+            "per_second": 0.2770398148148148,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 14351.908000000001,
+            "per_second": 0.1661100462962963,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          }
+        }
+      },
+      "sizing_scenario": {
+        "headroom_multiplier": 3.0,
+        "target_rows_per_second": 2292,
+        "target_book_rows_per_second": 2139,
+        "source_json_mbit_per_second_proxy": 9.114888,
+        "source_json_gb_per_day_if_target_peak_persisted": 98.4407904,
+        "hypothetical_order_requests_per_second": 8556.0
+      }
+    },
+    "fix/futures": {
+      "rows": 2746507,
+      "record_types": {
+        "trade": 333,
+        "market_stat": 2039,
+        "book_snapshot": 9402,
+        "book_change": 2734733
+      },
+      "markets_with_data": 18,
+      "rows_missing_selected_clock": 0,
+      "timed_rows_missing_source_json": 0,
+      "timed_trades_with_invalid_or_missing_price_size": 0,
+      "top_markets_by_rows": [
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-gerpri",
+          187658
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-garand",
+          175480
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-stebun",
+          170647
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-jamwad",
+          169273
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-giavee",
+          166653
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-chrdob",
+          159182
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-josroc",
+          158470
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-wesnij",
+          154806
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-robcro",
+          154298
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-dirdui",
+          154030
+        ]
+      ],
+      "first_timestamp_utc": "2026-08-05T20:21:12.972241+00:00",
+      "last_timestamp_utc": "2026-08-19T02:16:02.763640+00:00",
+      "seconds_with_records": 508074,
+      "calendar_seconds_inclusive": 1144491,
+      "fraction_of_calendar_seconds_with_records": 0.4439300964358828,
+      "calendar_mean_rows_per_second": 2.399762864015532,
+      "mean_rows_per_nonempty_second": 5.405722394769266,
+      "p99_rows_per_nonempty_second": 19,
+      "recorded_source_json_bytes": 1340048968,
+      "recorded_trade_rows": 333,
+      "recorded_trade_contracts_not_deduplicated": 26892.17,
+      "recorded_trade_price_times_size_usd_not_deduplicated": 2057.9248000000002,
+      "max_distinct_markets_observed_in_one_utc_minute": 18,
+      "largest_intervals_between_nonempty_seconds": [
+        {
+          "from_utc": "2026-08-11T10:22:18+00:00",
+          "to_utc": "2026-08-11T14:14:11+00:00",
+          "empty_seconds": 13912
+        },
+        {
+          "from_utc": "2026-08-14T21:00:02+00:00",
+          "to_utc": "2026-08-14T21:31:44+00:00",
+          "empty_seconds": 1901
+        },
+        {
+          "from_utc": "2026-08-11T14:15:01+00:00",
+          "to_utc": "2026-08-11T14:37:22+00:00",
+          "empty_seconds": 1340
+        },
+        {
+          "from_utc": "2026-08-06T07:49:50+00:00",
+          "to_utc": "2026-08-06T08:08:57+00:00",
+          "empty_seconds": 1146
+        },
+        {
+          "from_utc": "2026-08-08T19:40:57+00:00",
+          "to_utc": "2026-08-08T19:58:45+00:00",
+          "empty_seconds": 1067
+        }
+      ],
+      "peaks_in_utc_aligned_windows_seconds": {
+        "1": {
+          "rows": {
+            "max_count": 209,
+            "per_second": 209.0,
+            "window_start_utc": "2026-08-14T21:32:59+00:00"
+          },
+          "book_rows": {
+            "max_count": 190,
+            "per_second": 190.0,
+            "window_start_utc": "2026-08-14T21:32:59+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 103092,
+            "per_second": 103092.0,
+            "window_start_utc": "2026-08-14T21:32:59+00:00"
+          },
+          "trade_rows": {
+            "max_count": 22,
+            "per_second": 22.0,
+            "window_start_utc": "2026-08-08T03:12:41+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 1800.0,
+            "per_second": 1800.0,
+            "window_start_utc": "2026-08-08T03:12:41+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 118.0,
+            "per_second": 118.0,
+            "window_start_utc": "2026-08-08T03:12:41+00:00"
+          }
+        },
+        "10": {
+          "rows": {
+            "max_count": 769,
+            "per_second": 76.9,
+            "window_start_utc": "2026-08-11T17:02:50+00:00"
+          },
+          "book_rows": {
+            "max_count": 769,
+            "per_second": 76.9,
+            "window_start_utc": "2026-08-11T17:02:50+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 375278,
+            "per_second": 37527.8,
+            "window_start_utc": "2026-08-11T17:02:50+00:00"
+          },
+          "trade_rows": {
+            "max_count": 41,
+            "per_second": 4.1,
+            "window_start_utc": "2026-08-08T03:12:40+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 3600.0,
+            "per_second": 360.0,
+            "window_start_utc": "2026-08-08T03:12:40+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 236.0,
+            "per_second": 23.6,
+            "window_start_utc": "2026-08-08T03:12:40+00:00"
+          }
+        },
+        "60": {
+          "rows": {
+            "max_count": 1366,
+            "per_second": 22.766666666666666,
+            "window_start_utc": "2026-08-11T17:03:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 1366,
+            "per_second": 22.766666666666666,
+            "window_start_utc": "2026-08-11T17:03:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 666593,
+            "per_second": 11109.883333333333,
+            "window_start_utc": "2026-08-11T17:03:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 86,
+            "per_second": 1.4333333333333333,
+            "window_start_utc": "2026-08-08T03:12:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 7361.0,
+            "per_second": 122.68333333333334,
+            "window_start_utc": "2026-08-08T03:12:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 506.08000000000004,
+            "per_second": 8.434666666666667,
+            "window_start_utc": "2026-08-08T03:12:00+00:00"
+          }
+        },
+        "3600": {
+          "rows": {
+            "max_count": 36563,
+            "per_second": 10.15638888888889,
+            "window_start_utc": "2026-08-17T16:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 36563,
+            "per_second": 10.15638888888889,
+            "window_start_utc": "2026-08-17T16:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 17871815,
+            "per_second": 4964.393055555555,
+            "window_start_utc": "2026-08-17T16:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 226,
+            "per_second": 0.06277777777777778,
+            "window_start_utc": "2026-08-08T03:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 19851.0,
+            "per_second": 5.514166666666667,
+            "window_start_utc": "2026-08-08T03:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 1302.18,
+            "per_second": 0.3617166666666667,
+            "window_start_utc": "2026-08-08T03:00:00+00:00"
+          }
+        },
+        "86400": {
+          "rows": {
+            "max_count": 615144,
+            "per_second": 7.119722222222222,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 615094,
+            "per_second": 7.119143518518518,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 300399440,
+            "per_second": 3476.8453703703703,
+            "window_start_utc": "2026-08-18T00:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 244,
+            "per_second": 0.002824074074074074,
+            "window_start_utc": "2026-08-08T00:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 21004.71,
+            "per_second": 0.24311006944444444,
+            "window_start_utc": "2026-08-08T00:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 1436.0425999999998,
+            "per_second": 0.016620863425925923,
+            "window_start_utc": "2026-08-08T00:00:00+00:00"
+          }
+        }
+      },
+      "sizing_scenario": {
+        "headroom_multiplier": 3.0,
+        "target_rows_per_second": 627,
+        "target_book_rows_per_second": 570,
+        "source_json_mbit_per_second_proxy": 2.474208,
+        "source_json_gb_per_day_if_target_peak_persisted": 26.7214464,
+        "hypothetical_order_requests_per_second": 2280.0
+      }
+    },
+    "websocket/all": {
+      "rows": 201907,
+      "record_types": {
+        "trade": 169,
+        "book_snapshot": 201738
+      },
+      "markets_with_data": 127,
+      "rows_missing_selected_clock": 0,
+      "timed_rows_missing_source_json": 0,
+      "timed_trades_with_invalid_or_missing_price_size": 0,
+      "top_markets_by_rows": [
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-lukhum",
+          13936
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-luklit",
+          11961
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-gerpri",
+          11868
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-wesnij",
+          11428
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-robcro",
+          8811
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-kevdoe",
+          8801
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-garand",
+          8451
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-ryasea",
+          8396
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-dannop",
+          7006
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-josroc",
+          6919
+        ]
+      ],
+      "first_timestamp_utc": "2026-07-29T03:38:38.422370+00:00",
+      "last_timestamp_utc": "2026-08-05T20:17:57.047242+00:00",
+      "seconds_with_records": 107450,
+      "calendar_seconds_inclusive": 664760,
+      "fraction_of_calendar_seconds_with_records": 0.16163728262831698,
+      "calendar_mean_rows_per_second": 0.3037291654130814,
+      "mean_rows_per_nonempty_second": 1.8790786412284783,
+      "p99_rows_per_nonempty_second": 10,
+      "recorded_source_json_bytes": 215073196,
+      "recorded_trade_rows": 169,
+      "recorded_trade_contracts_not_deduplicated": 63202.96,
+      "recorded_trade_price_times_size_usd_not_deduplicated": 948.7557,
+      "max_distinct_markets_observed_in_one_utc_minute": 117,
+      "largest_intervals_between_nonempty_seconds": [
+        {
+          "from_utc": "2026-08-05T07:20:04+00:00",
+          "to_utc": "2026-08-05T07:44:03+00:00",
+          "empty_seconds": 1438
+        },
+        {
+          "from_utc": "2026-07-30T06:29:29+00:00",
+          "to_utc": "2026-07-30T06:51:06+00:00",
+          "empty_seconds": 1296
+        },
+        {
+          "from_utc": "2026-08-05T09:30:50+00:00",
+          "to_utc": "2026-08-05T09:51:24+00:00",
+          "empty_seconds": 1233
+        },
+        {
+          "from_utc": "2026-08-05T14:15:27+00:00",
+          "to_utc": "2026-08-05T14:34:50+00:00",
+          "empty_seconds": 1162
+        },
+        {
+          "from_utc": "2026-08-05T07:44:05+00:00",
+          "to_utc": "2026-08-05T08:03:05+00:00",
+          "empty_seconds": 1139
+        }
+      ],
+      "peaks_in_utc_aligned_windows_seconds": {
+        "1": {
+          "rows": {
+            "max_count": 123,
+            "per_second": 123.0,
+            "window_start_utc": "2026-07-29T18:18:41+00:00"
+          },
+          "book_rows": {
+            "max_count": 123,
+            "per_second": 123.0,
+            "window_start_utc": "2026-07-29T18:18:41+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 113247,
+            "per_second": 113247.0,
+            "window_start_utc": "2026-07-29T18:18:41+00:00"
+          },
+          "trade_rows": {
+            "max_count": 4,
+            "per_second": 4.0,
+            "window_start_utc": "2026-07-29T17:00:20+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 1350.0,
+            "per_second": 1350.0,
+            "window_start_utc": "2026-07-29T17:09:33+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 99.12,
+            "per_second": 99.12,
+            "window_start_utc": "2026-07-29T16:44:59+00:00"
+          }
+        },
+        "10": {
+          "rows": {
+            "max_count": 225,
+            "per_second": 22.5,
+            "window_start_utc": "2026-07-29T18:18:40+00:00"
+          },
+          "book_rows": {
+            "max_count": 225,
+            "per_second": 22.5,
+            "window_start_utc": "2026-07-29T18:18:40+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 212878,
+            "per_second": 21287.8,
+            "window_start_utc": "2026-07-29T18:18:40+00:00"
+          },
+          "trade_rows": {
+            "max_count": 5,
+            "per_second": 0.5,
+            "window_start_utc": "2026-07-29T17:09:10+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 2300.0,
+            "per_second": 230.0,
+            "window_start_utc": "2026-07-29T17:10:30+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 99.12,
+            "per_second": 9.912,
+            "window_start_utc": "2026-07-29T16:44:50+00:00"
+          }
+        },
+        "60": {
+          "rows": {
+            "max_count": 418,
+            "per_second": 6.966666666666667,
+            "window_start_utc": "2026-07-29T16:59:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 418,
+            "per_second": 6.966666666666667,
+            "window_start_utc": "2026-07-29T16:59:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 361089,
+            "per_second": 6018.15,
+            "window_start_utc": "2026-07-29T16:59:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 16,
+            "per_second": 0.26666666666666666,
+            "window_start_utc": "2026-07-29T17:10:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 8300.0,
+            "per_second": 138.33333333333334,
+            "window_start_utc": "2026-07-29T17:10:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 99.12,
+            "per_second": 1.6520000000000001,
+            "window_start_utc": "2026-07-29T16:44:00+00:00"
+          }
+        },
+        "3600": {
+          "rows": {
+            "max_count": 8256,
+            "per_second": 2.2933333333333334,
+            "window_start_utc": "2026-07-29T16:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 8255,
+            "per_second": 2.2930555555555556,
+            "window_start_utc": "2026-07-29T16:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 7183929,
+            "per_second": 1995.5358333333334,
+            "window_start_utc": "2026-07-29T16:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 118,
+            "per_second": 0.03277777777777778,
+            "window_start_utc": "2026-07-29T17:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 61668.009999999995,
+            "per_second": 17.130002777777776,
+            "window_start_utc": "2026-07-29T17:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 627.3669,
+            "per_second": 0.17426858333333334,
+            "window_start_utc": "2026-07-29T17:00:00+00:00"
+          }
+        },
+        "86400": {
+          "rows": {
+            "max_count": 74317,
+            "per_second": 0.8601504629629629,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 74191,
+            "per_second": 0.8586921296296296,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 65453526,
+            "per_second": 757.5639583333333,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 126,
+            "per_second": 0.0014583333333333334,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 62630.89,
+            "per_second": 0.7248945601851852,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 749.3910999999999,
+            "per_second": 0.008673508101851852,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          }
+        }
+      },
+      "sizing_scenario": {
+        "headroom_multiplier": 3.0,
+        "target_rows_per_second": 369,
+        "target_book_rows_per_second": 369,
+        "source_json_mbit_per_second_proxy": 2.717928,
+        "source_json_gb_per_day_if_target_peak_persisted": 29.3536224,
+        "hypothetical_order_requests_per_second": 1476.0
+      }
+    },
+    "websocket/futures": {
+      "rows": 201907,
+      "record_types": {
+        "trade": 169,
+        "book_snapshot": 201738
+      },
+      "markets_with_data": 127,
+      "rows_missing_selected_clock": 0,
+      "timed_rows_missing_source_json": 0,
+      "timed_trades_with_invalid_or_missing_price_size": 0,
+      "top_markets_by_rows": [
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-lukhum",
+          13936
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-luklit",
+          11961
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-gerpri",
+          11868
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-wesnij",
+          11428
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-robcro",
+          8811
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-kevdoe",
+          8801
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-garand",
+          8451
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-ryasea",
+          8396
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-dannop",
+          7006
+        ],
+        [
+          "tec-pdc-worldchamp-2027-01-03-w-josroc",
+          6919
+        ]
+      ],
+      "first_timestamp_utc": "2026-07-29T03:38:38.422370+00:00",
+      "last_timestamp_utc": "2026-08-05T20:17:57.047242+00:00",
+      "seconds_with_records": 107450,
+      "calendar_seconds_inclusive": 664760,
+      "fraction_of_calendar_seconds_with_records": 0.16163728262831698,
+      "calendar_mean_rows_per_second": 0.3037291654130814,
+      "mean_rows_per_nonempty_second": 1.8790786412284783,
+      "p99_rows_per_nonempty_second": 10,
+      "recorded_source_json_bytes": 215073196,
+      "recorded_trade_rows": 169,
+      "recorded_trade_contracts_not_deduplicated": 63202.96,
+      "recorded_trade_price_times_size_usd_not_deduplicated": 948.7557,
+      "max_distinct_markets_observed_in_one_utc_minute": 117,
+      "largest_intervals_between_nonempty_seconds": [
+        {
+          "from_utc": "2026-08-05T07:20:04+00:00",
+          "to_utc": "2026-08-05T07:44:03+00:00",
+          "empty_seconds": 1438
+        },
+        {
+          "from_utc": "2026-07-30T06:29:29+00:00",
+          "to_utc": "2026-07-30T06:51:06+00:00",
+          "empty_seconds": 1296
+        },
+        {
+          "from_utc": "2026-08-05T09:30:50+00:00",
+          "to_utc": "2026-08-05T09:51:24+00:00",
+          "empty_seconds": 1233
+        },
+        {
+          "from_utc": "2026-08-05T14:15:27+00:00",
+          "to_utc": "2026-08-05T14:34:50+00:00",
+          "empty_seconds": 1162
+        },
+        {
+          "from_utc": "2026-08-05T07:44:05+00:00",
+          "to_utc": "2026-08-05T08:03:05+00:00",
+          "empty_seconds": 1139
+        }
+      ],
+      "peaks_in_utc_aligned_windows_seconds": {
+        "1": {
+          "rows": {
+            "max_count": 123,
+            "per_second": 123.0,
+            "window_start_utc": "2026-07-29T18:18:41+00:00"
+          },
+          "book_rows": {
+            "max_count": 123,
+            "per_second": 123.0,
+            "window_start_utc": "2026-07-29T18:18:41+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 113247,
+            "per_second": 113247.0,
+            "window_start_utc": "2026-07-29T18:18:41+00:00"
+          },
+          "trade_rows": {
+            "max_count": 4,
+            "per_second": 4.0,
+            "window_start_utc": "2026-07-29T17:00:20+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 1350.0,
+            "per_second": 1350.0,
+            "window_start_utc": "2026-07-29T17:09:33+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 99.12,
+            "per_second": 99.12,
+            "window_start_utc": "2026-07-29T16:44:59+00:00"
+          }
+        },
+        "10": {
+          "rows": {
+            "max_count": 225,
+            "per_second": 22.5,
+            "window_start_utc": "2026-07-29T18:18:40+00:00"
+          },
+          "book_rows": {
+            "max_count": 225,
+            "per_second": 22.5,
+            "window_start_utc": "2026-07-29T18:18:40+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 212878,
+            "per_second": 21287.8,
+            "window_start_utc": "2026-07-29T18:18:40+00:00"
+          },
+          "trade_rows": {
+            "max_count": 5,
+            "per_second": 0.5,
+            "window_start_utc": "2026-07-29T17:09:10+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 2300.0,
+            "per_second": 230.0,
+            "window_start_utc": "2026-07-29T17:10:30+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 99.12,
+            "per_second": 9.912,
+            "window_start_utc": "2026-07-29T16:44:50+00:00"
+          }
+        },
+        "60": {
+          "rows": {
+            "max_count": 418,
+            "per_second": 6.966666666666667,
+            "window_start_utc": "2026-07-29T16:59:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 418,
+            "per_second": 6.966666666666667,
+            "window_start_utc": "2026-07-29T16:59:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 361089,
+            "per_second": 6018.15,
+            "window_start_utc": "2026-07-29T16:59:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 16,
+            "per_second": 0.26666666666666666,
+            "window_start_utc": "2026-07-29T17:10:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 8300.0,
+            "per_second": 138.33333333333334,
+            "window_start_utc": "2026-07-29T17:10:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 99.12,
+            "per_second": 1.6520000000000001,
+            "window_start_utc": "2026-07-29T16:44:00+00:00"
+          }
+        },
+        "3600": {
+          "rows": {
+            "max_count": 8256,
+            "per_second": 2.2933333333333334,
+            "window_start_utc": "2026-07-29T16:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 8255,
+            "per_second": 2.2930555555555556,
+            "window_start_utc": "2026-07-29T16:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 7183929,
+            "per_second": 1995.5358333333334,
+            "window_start_utc": "2026-07-29T16:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 118,
+            "per_second": 0.03277777777777778,
+            "window_start_utc": "2026-07-29T17:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 61668.009999999995,
+            "per_second": 17.130002777777776,
+            "window_start_utc": "2026-07-29T17:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 627.3669,
+            "per_second": 0.17426858333333334,
+            "window_start_utc": "2026-07-29T17:00:00+00:00"
+          }
+        },
+        "86400": {
+          "rows": {
+            "max_count": 74317,
+            "per_second": 0.8601504629629629,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "book_rows": {
+            "max_count": 74191,
+            "per_second": 0.8586921296296296,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "source_json_bytes": {
+            "max_count": 65453526,
+            "per_second": 757.5639583333333,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "trade_rows": {
+            "max_count": 126,
+            "per_second": 0.0014583333333333334,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "trade_contracts": {
+            "max_count": 62630.89,
+            "per_second": 0.7248945601851852,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          },
+          "trade_price_times_size_usd": {
+            "max_count": 749.3910999999999,
+            "per_second": 0.008673508101851852,
+            "window_start_utc": "2026-07-29T00:00:00+00:00"
+          }
+        }
+      },
+      "sizing_scenario": {
+        "headroom_multiplier": 3.0,
+        "target_rows_per_second": 369,
+        "target_book_rows_per_second": 369,
+        "source_json_mbit_per_second_proxy": 2.717928,
+        "source_json_gb_per_day_if_target_peak_persisted": 29.3536224,
+        "hypothetical_order_requests_per_second": 1476.0
+      }
+    }
+  }
+}

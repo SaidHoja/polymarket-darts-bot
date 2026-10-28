@@ -1,0 +1,35 @@
+# First live test of m3_15c_pre_inv: pre-match quotes at
+# others' mid ± 15¢, pulled at the scheduled start, inventory capped at 3. Size 1, tight limits.
+# The goal is to measure crossing-fill realism, not to make money.
+#
+#   cargo build --release -p pm-live
+#   ./target/release/pmbot --mode live --config config/pmbot-m3-live.toml --ui 127.0.0.1:8787
+
+[markets]
+types = ["darts_match_winner"]
+
+[strategies.default]
+kind = "pre_match"              # defaults are m3_15c_pre_inv; spelled out here for the record
+size = 1.0
+half_spread = 0.15
+max_spread = 0.40
+stop_before_start_s = 0.0
+max_inventory = 3.0
+skew_per_contract = 0.01
+
+[strategies.off]
+kind = "off"
+
+[risk]
+max_position = 6.0
+max_order_size = 1.0
+max_orders_total = 40
+max_market_loss = 6.0
+max_account_loss = 30.0
+daily_loss_limit = 15.0         # below max_account_loss, so the daily kill fires first
+market_loss_limit = 2.0
+max_dev_from_fair = 0.16    # ±15¢ quotes round outward to the tick, up to 15.5¢ from fair
+
+[execution]
+rate_limit_enabled = false    # local REST budget off; HTTP 429 backoff still applies
+core_spin_us = 1000000        # keeps the core thread from sleeping between passes (one CPU busy) to skip the OS wake-up

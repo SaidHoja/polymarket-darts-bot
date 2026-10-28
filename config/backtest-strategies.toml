@@ -1,0 +1,79 @@
+# Market-making profiles from the 2026-10-26 strategy research. Each is one of the three
+# mid-based market makers (`pre_match`, `full_match`, `two_phase`; `two_phase_vwap` is in
+# backtest.example.toml); names keep the research labels
+# so results stay comparable. Pick on --split dev; the holdout has been reused, so treat it
+# as a second dev set.
+#
+#   ./target/release/pm-backtest run --config config/backtest-strategies.toml --split dev \
+#       --strategy off,m1_15c,m2_10c_pre,m3_15c_pre_inv,mix_10c_pre_15c_live --fill-model pessimistic
+
+[strategies.off]
+kind = "off"
+
+# M1: one width before the start and in play.
+[strategies.m1_10c]
+kind = "full_match"
+half_spread = 0.10
+max_spread = 0.30
+
+[strategies.m1_15c]
+kind = "full_match"
+half_spread = 0.15
+max_spread = 0.40
+
+[strategies.m1_20c]
+kind = "full_match"
+half_spread = 0.20
+max_spread = 0.50
+
+# M2: pre-match only, no inventory cap. We have no score feed, so in play we are the slow side.
+[strategies.m2_5c_pre]
+kind = "pre_match"
+half_spread = 0.05
+max_spread = 0.10
+max_inventory = 0.0
+skew_per_contract = 0.0
+
+[strategies.m2_10c_pre]
+kind = "pre_match"
+half_spread = 0.10
+max_spread = 0.30
+max_inventory = 0.0
+skew_per_contract = 0.0
+
+[strategies.m2_15c_pre]
+kind = "pre_match"
+half_spread = 0.15
+max_spread = 0.40
+max_inventory = 0.0
+skew_per_contract = 0.0
+
+[strategies.m2_20c_pre]
+kind = "pre_match"
+half_spread = 0.20
+max_spread = 0.50
+max_inventory = 0.0
+skew_per_contract = 0.0
+
+# M3: pre-match, inventory capped at 3 with a 1¢ skew per contract (the pre_match defaults).
+[strategies.m3_10c_pre_inv]
+kind = "pre_match"
+half_spread = 0.10
+max_spread = 0.30
+
+[strategies.m3_15c_pre_inv]
+kind = "pre_match"
+
+# MIX: 10¢ pre-match, widening to 15¢ from 5 minutes before the scheduled start and through play.
+[strategies.mix_10c_pre_15c_live]
+kind = "two_phase"
+
+[strategies.mix_10c_pre_15c_live_inv]
+kind = "two_phase"
+max_inventory = 3.0
+skew_per_contract = 0.01
+
+[risk]
+max_position = 20.0
+max_order_size = 5.0
+max_dev_from_fair = 0.16    # as live: ±15¢ quotes round outward to up to 15.5¢ from fair

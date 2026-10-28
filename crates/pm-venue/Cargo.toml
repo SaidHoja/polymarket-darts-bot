@@ -1,0 +1,25 @@
+[package]
+name = "pm-venue"
+edition.workspace = true
+rust-version.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+pm-types = { path = "../pm-types" }
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tokio-tungstenite.workspace = true
+reqwest.workspace = true
+ed25519-dalek.workspace = true
+base64.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+tokio.workspace = true
+
+[[bench]]
+name = "venue"
+harness = false

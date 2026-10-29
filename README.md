@@ -50,8 +50,10 @@ Dependencies point inwards: `pm-live` → `pm-core` + `pm-venue` → `pm-types`,
 cargo build --release -p pm-live
 ./target/release/pmbot --mode record                              # feeds and journals only, no orders
 ./target/release/pmbot --mode paper                               # real data, local fake gateway that never fills
-./target/release/pmbot --mode live --config config/pmbot.toml     # real orders
+./target/release/pmbot --mode live --config config/pmbot-two-phase-live.toml   # real orders
 ```
+
+`--config` picks the run config. The one currently run live is [`pmbot-two-phase-live.toml`](config/pmbot-two-phase-live.toml); the other `config/pmbot-*.toml` files are alternatives, and [`pmbot.example.toml`](config/pmbot.example.toml) documents every key.
 
 Add `--ui 127.0.0.1:8787` for the operator UI. The admin socket takes `status`, `metrics`, `pause [slug]`, `resume [slug]` and `cancel-all` (`echo status | nc -U run/pmbot.sock`). The daily kill, the day's PnL, market losses and indefinite pauses survive a restart in `run/risk-state-<mode>.json` (`--risk-state`). See [`pm-live`](docs/architecture/pm-live.md) for shutdown, the watchdog, the risk state file and journals, and [metrics](docs/metrics.md) for the latency stages.
 

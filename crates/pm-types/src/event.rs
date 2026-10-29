@@ -174,7 +174,8 @@ pub struct PositionFrame {
     pub slug: Slug,
     /// Signed net YES position.
     pub net: Qty,
-    /// Cost basis in dollars, when reported.
+    /// Net YES cash paid (buys − sells), excluding fees, when reported. Venue outcome cost is
+    /// normalized by the adapter, including reported realized PnL.
     pub cost: Option<f64>,
     /// This change is the market resolving (`LEDGER_ENTRY_TYPE_RESOLUTION`), not a trade.
     #[serde(default)]

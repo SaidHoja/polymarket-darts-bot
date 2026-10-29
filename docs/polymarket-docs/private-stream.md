@@ -52,10 +52,15 @@ Query: `market` (one slug), `limit` (default 100), `cursor`. The response is
 | `netPositionDecimal` | Signed net YES position (negative = short). **Use this**, not `netPosition`. |
 | `qtyBoughtDecimal`, `qtySoldDecimal`, `bodPositionDecimal` | Totals and beginning-of-day position |
 | `qtyAvailableDecimal` | Tradable quantity after open orders (nullable) |
-| `cost` | Cost basis (`Amount`) |
+| `cost` | Purchase cost of the held outcome (`Amount`), positive for both YES and NO positions |
 | `realized` | Realized PnL |
-| `cashValue` | Unrealized PnL |
+| `cashValue` | Current value of the held outcome, not unrealized PnL (observed live on 2026-10-29) |
 | `expired`, `updateTime`, `marketMetadata` | |
+
+The core accounts in signed YES cash flows. For signed net YES quantity `q`, the adapter converts
+the venue basis to `cost + min(q, 0) - realized`. A short of one YES with venue NO cost $0.64
+becomes signed YES cost −$0.36, giving settlement PnL −$0.64 if YES and +$0.36 if NO. Reported
+realized PnL is included so a restart retains gains and losses from earlier closes in a held market.
 
 ## `GET /v1/account/balances`
 

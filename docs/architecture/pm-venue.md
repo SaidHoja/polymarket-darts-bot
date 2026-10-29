@@ -33,7 +33,7 @@ Decoding conventions:
 - Numbers go through their text, so ticks and quantities stay exact even when sent as JSON numbers.
 - Unknown enum strings become `Unknown`; a frame that can't be decoded returns `Err`. The markets socket logs and drops it; the private socket reconnects, so a dropped execution can't silently lose a fill.
 - A numeric field that is present but unreadable is an error, never a zero; an absent one is a protobuf default (zero). A `FILL`/`PARTIAL_FILL` execution needs a positive `lastShares`; a zero or absent `lastPx` falls back to the order price.
-- Positions prefer the `*Decimal` fields. Execution reject reasons are read only on `Rejected` executions, because protobuf defaults put a reason on every execution.
+- Positions prefer the `*Decimal` fields. The venue's positive held-outcome purchase cost is normalized to signed YES cash paid as `cost + min(net, 0) - realized`, so NO positions and earlier realized PnL enter the core with the same basis as fills. Execution reject reasons are read only on `Rejected` executions, because protobuf defaults put a reason on every execution.
 - A tick or minimum quantity that is present but unusable (unparseable, more than 4 decimals, not positive) skips the market with a warning. An absent one defaults to 0.01, also with a warning. League is taken from the event's league or series fields, falling back to the event-slug prefix.
 - Before a match, `eventState` is null, and `decode_game` reads the summary fields from the event itself.
 

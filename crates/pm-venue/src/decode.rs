@@ -469,14 +469,20 @@ fn position_slug(sub: &Value) -> Option<String> {
     None
 }
 
-/// A `UserPosition`: always prefer the `*Decimal` fields.
+/// A `UserPosition`: prefer the `*Decimal` fields and normalize outcome cost to signed YES cash.
 pub fn decode_user_position(slug: &str, pos: &Value) -> PositionFrame {
+    let net = opt_qty(pos.get("netPositionDecimal"))
+        .or_else(|| opt_qty(pos.get("netPosition")))
+        .unwrap_or(Qty::ZERO);
+    // The venue reports the purchase cost of the held outcome: a NO position of -1 bought for
+    // $0.64 represents $0.36 of YES sale proceeds, so its signed YES cost is -$0.36. Subtract
+    // realised PnL too, to recover net cash paid across earlier closes in this market.
+    let realized = dollars(pos.get("realized")).unwrap_or(0.0);
+    let cost = dollars(pos.get("cost")).map(|cost| cost + net.as_f64().min(0.0) - realized);
     PositionFrame {
         slug: Arc::from(slug),
-        net: opt_qty(pos.get("netPositionDecimal"))
-            .or_else(|| opt_qty(pos.get("netPosition")))
-            .unwrap_or(Qty::ZERO),
-        cost: dollars(pos.get("cost")),
+        net,
+        cost,
         resolution: false,
     }
 }
@@ -1013,8 +1019,35 @@ mod tests {
         let body = parse_json(r#"{"positions":{"m1":{"netPositionDecimal":"-2.5","netPosition":-2,"cost":{"value":"1.20"}}},"eof":true}"#).unwrap();
         let (positions, cursor, eof) = decode_positions_page(&body).unwrap();
         assert_eq!(positions[0].net, Qty(-25_000));
-        assert_eq!(positions[0].cost, Some(1.2));
+        assert_eq!(positions[0].cost, Some(-1.3));
         assert!(cursor.is_none() && eof);
+    }
+
+    #[test]
+    fn rest_and_private_positions_use_the_same_signed_cash_basis() {
+        for (net, cost, realized, expected) in [
+            ("2.0000", "0.8000", "0.1000", 0.70),
+            ("-1.0000", "0.6400", "0.0000", -0.36),
+            ("-4.0000", "1.3500", "-0.0500", -2.60),
+        ] {
+            let pos = serde_json::json!({
+                "netPositionDecimal": net,
+                "cost": { "value": cost },
+                "realized": { "value": realized },
+                "marketMetadata": { "slug": "m" }
+            });
+            let body = serde_json::json!({ "positions": { "m": pos }, "eof": true });
+            let (positions, _, _) = decode_positions_page(&body).unwrap();
+            assert!((positions[0].cost.unwrap() - expected).abs() < 1e-9);
+            let raw = serde_json::json!({ "positionSubscription": { "afterPosition": pos } });
+            assert_eq!(
+                decode_private_frame(&raw.to_string()).unwrap(),
+                PrivateMsg::Position(positions[0].clone())
+            );
+        }
+        // Unknown cost stays unknown, so the portfolio can use its existing fallback.
+        let missing = parse_json(r#"{"netPositionDecimal":"-1.0000","cost":null}"#).unwrap();
+        assert_eq!(decode_user_position("m", &missing).cost, None);
     }
 
     /// Empty-account bodies as the venue sends them (2026-10-28) versus malformed ones.

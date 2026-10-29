@@ -697,6 +697,86 @@ fn snapshot_reports_pnl_and_exposure() {
 }
 
 #[test]
+fn venue_position_seed_preserves_outcome_pnl_and_risk() {
+    // Venue costs are purchases of the held outcome, while the core accounts in signed YES cash.
+    // The short examples are from the 2026-10-29 account and execution captures.
+    for (net, cost, realized, bid, ask, yes, no, marked, worst) in [
+        (
+            "2.0000", "0.8000", "0.0000", 4500, 5500, 1.20, -0.80, 0.20, 0.80,
+        ),
+        (
+            "-1.0000", "0.6400", "0.0000", 2900, 3500, -0.64, 0.36, 0.04, 0.64,
+        ),
+        (
+            "-4.0000", "1.3500", "-0.0500", 6300, 6800, -1.40, 2.60, -0.02, 1.40,
+        ),
+        (
+            "-1.0000", "0.6200", "0.0000", 2800, 3100, -0.62, 0.38, 0.085, 0.62,
+        ),
+        (
+            "-2.5000", "1.2000", "0.0000", 4700, 4900, -1.20, 1.30, 0.10, 1.20,
+        ),
+        (
+            "1.0000", "0.4000", "0.1000", 4500, 5500, 0.70, -0.30, 0.20, 0.30,
+        ),
+    ] {
+        let body = serde_json::json!({
+            "positions": {
+                SLUG: {
+                    "netPositionDecimal": net,
+                    "cost": { "value": cost, "currency": "USD" },
+                    "realized": { "value": realized, "currency": "USD" }
+                }
+            },
+            "eof": true
+        });
+        let (positions, _, _) = pm_venue::decode::decode_positions_page(&body).unwrap();
+        let mut core = Core::new(Config::default());
+        core.tick(
+            clock(SEC),
+            vec![
+                Event::Markets(vec![params()]),
+                Event::Positions(positions.clone()),
+                book(1, bid, ask),
+            ],
+        );
+        // A repeated REST read must not apply the basis or realised PnL twice.
+        core.tick(clock(SEC + 1), vec![Event::Positions(positions)]);
+        let snapshot = core.snapshot(clock(SEC + 2));
+        let row = &snapshot.markets[0];
+        for (actual, expected) in [
+            (row.pnl_if_yes, yes),
+            (row.pnl_if_no, no),
+            (snapshot.current_pnl, marked),
+            (snapshot.account_worst, worst),
+        ] {
+            assert!(
+                (actual - expected).abs() < 1e-9,
+                "net {net}, cost {cost}, realised {realized}: {actual} != {expected}"
+            );
+        }
+        // Closing at the same mark preserves the PnL that was shown before the close.
+        let pos = core.portfolio.position(SLUG);
+        let side = if pos.qty > Qty::ZERO {
+            Side::Sell
+        } else {
+            Side::Buy
+        };
+        core.portfolio.on_fill(
+            &Arc::from(SLUG),
+            side,
+            pos.qty.abs(),
+            Px((bid + ask) / 2),
+            0.0,
+        );
+        let closed = core.portfolio.position(SLUG);
+        assert_eq!(closed.qty, Qty::ZERO);
+        assert!((closed.pnl_at(0.0) - marked).abs() < 1e-9);
+        assert!((closed.pnl_at(1.0) - marked).abs() < 1e-9);
+    }
+}
+
+#[test]
 fn market_detail_has_book_orders_and_fills() {
     let (mut core, placed) = ready_core();
     assert!(core
